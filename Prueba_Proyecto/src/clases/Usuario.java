@@ -1,3 +1,4 @@
+package clases;
 
 public class Usuario implements Comparable{
 	protected String nick;

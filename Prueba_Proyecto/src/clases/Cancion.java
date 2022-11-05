@@ -1,3 +1,4 @@
+package clases;
 
 public class Cancion extends Multimedia{
 	protected Genero genero;
@@ -23,7 +24,7 @@ public class Cancion extends Multimedia{
 	@Override
 	public String toString() {
 		return "Cancion [genero=" + genero + ", nombre=" + nombre + ", artista=" + artista + ", duracion=" + duracion
-				+ ", reproducciones=" + reproducciones + ", megusta=" + megusta + "]" + "id" + this.getId();
+				+ ", reproducciones=" + reproducciones + ", megusta=" + megusta + "]";
 	}
 
 

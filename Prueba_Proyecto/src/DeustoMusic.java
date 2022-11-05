@@ -20,6 +20,13 @@ import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
+import clases.Cancion;
+import clases.Genero;
+import clases.Multimedia;
+import clases.Podcast;
+import clases.Tema;
+import clases.Usuario;
+
 
 //Algunas de las funciones han tenido que ser static por el momento, 
 //cuando añadamos las ventanas se harán algunos cambios, por eso dejamos los warnings
@@ -119,58 +126,9 @@ public class DeustoMusic {
 	}
 
 
-	public void crearBBDD() {
-		//Se abre la conexión y se obtiene el Statement
-		//Al abrir la conexión, si no existía el fichero, se crea la base de datos
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-		     Statement stmt = con.createStatement()) {
-			
-	        String sql = "CREATE TABLE IF NOT EXISTS MULTIMEDIA (\n"
-	                   + " ID INTEGER PRIMARY KEY AUTOINCREMENT,\n"
-	                   + " NOMBRE TEXT NOT NULL,\n"
-	                   + " ARTISTA TEXT NOT NULL,\n"
-	                   + " DURACION TEXT NOT NULL, \n"
-	                   + " REPRODUCCIONES TEXT NOT NULL, \n"
-	                   + " MEGUSTAS TEXT NOT NULL \n"
-	                   + ");";
-	        	        
-	        if (!stmt.execute(sql)) {
-	        	System.out.println("- Se ha creado la tabla Multimedia");
-	        }
-		} catch (Exception ex) {
-			System.err.println(String.format("* Error al crear la BBDD: %s", ex.getMessage()));
-			ex.printStackTrace();			
-		}
-	}
-	
-	public void borrarBBDD() {
-		//Se abre la conexión y se obtiene el Statement
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-		     Statement stmt = con.createStatement()) {
-			
-	        String sql = "DROP TABLE IF EXISTS MULTIMEDIA";
-			
-	        //Se ejecuta la sentencia de creación de la tabla Estudiantes
-	        if (!stmt.execute(sql)) {
-	        	System.out.println("- Se ha borrado la tabla Multimedia");
-	        }
-		} catch (Exception ex) {
-			System.err.println(String.format("* Error al borrar la BBDD: %s", ex.getMessage()));
-			ex.printStackTrace();			
-		}
-		
-		try {
-			//Se borra el fichero de la BBDD
-			Files.delete(Paths.get(DATABASE_FILE));
-			System.out.println("- Se ha borrado el fichero de la BBDD");
-		} catch (Exception ex) {
-			System.err.println(String.format("* Error al borrar el archivo de la BBDD: %s", ex.getMessage()));
-			ex.printStackTrace();						
-		}
-	}
-	
+
 		//Cargar el contenido multimedia de la base de datos en el programa
-	public static ArrayList<Multimedia> inicializar() {
+	public static TreeMap<String, ArrayList<Multimedia>> inicializar() {
 		ArrayList<Multimedia> multimedias = new ArrayList<>();
 		try (BufferedReader in = new BufferedReader(new FileReader("top10ss.csv"))){
 			String linea;
@@ -200,8 +158,8 @@ public class DeustoMusic {
 				multimedia.setMegusta(0);
 				
 				multimedias.add(multimedia);
-				//Creacion de una futura treemap
-				/*if (clase.equals("Cancion")){
+				//Creacion de una treemap de canciones y podcasts
+				if (clase.equals("Cancion")){
 					cancion.setNombre(multimedia.getNombre());
 					cancion.setArtista(multimedia.getArtista());
 					cancion.setDuracion(multimedia.getDuracion());
@@ -227,131 +185,19 @@ public class DeustoMusic {
 						}
 					}
 					listademedia.get("Podcasts").add(podcast);
-				}*/
-				
+				}
 				
 			}
 			
 			
 			//System.out.println(listademedia);
-			System.out.println(multimedias);
+			//System.out.println(multimedias);
 			
 		}catch (Exception ex) {
 			System.err.println("Error en el main: " +ex);
 			ex.printStackTrace();
 		}
-		return multimedias;
-	}
-	
-	public void insertarDatos(Multimedia...multimedias) {
-		//Se abre la conexión y se obtiene el Statement
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-		     Statement stmt = con.createStatement()) {
-			//Se define la plantilla de la sentencia SQL
-			String sql = "INSERT INTO MULTIMEDIA (NOMBRE, ARTISTA, DURACION, REPRODUCCIONES, MEGUSTAS) VALUES ('%s', '%s', '%d', '%d', '%d');";
-			
-			System.out.println("- Insertando multimedia...");
-			
-			//Se recorren los multimedias y se insertan uno a uno
-			for (Multimedia c : multimedias) {
-				if (1 == stmt.executeUpdate(String.format(sql, c.getNombre(), c.getArtista(), c.getDuracion(), c.getReproducciones(), c.getMegusta()))) {					
-					System.out.println(String.format(" - Multimedia insertado: %s", c.toString()));
-				} else {
-					System.out.println(String.format(" - No se ha insertado el multimedia: %s", c.toString()));
-				}
-				/*if (c instanceof Cancion) {
-					((Cancion)c).getGenero();
-					if (1 == stmt.executeUpdate(String.format(sql, c.getNombre(), c.getArtista(),((Cancion) c).getGenero(), c.getDuracion(), c.getReproducciones(), c.getMegusta()))) {					
-					System.out.println(String.format(" - Multimedia insertado: %s", c.toString()));
-					} else {
-					System.out.println(String.format(" - No se ha insertado el multimedia: %s", c.toString()));
-				}
-				} else{
-					((Podcast)c).getTema();
-					if (1 == stmt.executeUpdate(String.format(sql, c.getNombre(), c.getArtista(),((Podcast) c).getTema(), c.getDuracion(), c.getReproducciones(), c.getMegusta()))) {					
-						System.out.println(String.format(" - Multimedia insertado: %s", c.toString()));
-					} else {
-						System.out.println(String.format(" - No se ha insertado el multimedia: %s", c.toString()));
-					}
-
-				}*/
-				
-			}	
-			
-		} catch (Exception ex) {
-			System.err.println(String.format("* Error al insertar datos de la BBDD: %s", ex.getMessage()));
-			ex.printStackTrace();						
-		}				
-	}
-	
-	
-	public ArrayList<Multimedia> obtenerDatos() {
-		ArrayList<Multimedia> multimedias = new ArrayList<>();
-		
-		//Se abre la conexión y se obtiene el Statement
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-		     Statement stmt = con.createStatement()) {
-			String sql = "SELECT * FROM MULTIMEDIA WHERE ID >= 0";
-			
-			//Se ejecuta la sentencia y se obtiene el ResultSet con los resutlados
-			ResultSet rs = stmt.executeQuery(sql);			
-			Multimedia multimedia;
-			
-			//Se recorre el ResultSet y se crean objetos Cliente
-			while (rs.next()) {
-				multimedia = new Multimedia();
-				
-				multimedia.setId(rs.getInt("ID"));
-				multimedia.setNombre(rs.getString("NOMBRE"));
-				multimedia.setArtista(rs.getString("ARTISTA"));
-				multimedia.setDuracion(rs.getInt("DURACION"));
-				multimedia.setReproducciones(rs.getInt("REPRODUCCIONES"));
-				multimedia.setMegusta(rs.getInt("MEGUSTAS"));
-				
-				//Se inserta cada nuevo cliente en la lista de clientes
-				multimedias.add(multimedia);
-			}
-			
-			//Se cierra el ResultSet
-			rs.close();
-			
-			System.out.println(String.format("- Se han recuperado %d multimedias...", multimedias.size()));			
-		} catch (Exception ex) {
-			System.err.println(String.format("* Error al obtener datos de la BBDD: %s", ex.getMessage()));
-			ex.printStackTrace();						
-		}		
-		
-		return multimedias;
-	}
-	public void borrarDatos() {
-		//Se abre la conexión y se obtiene el Statement
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-		     Statement stmt = con.createStatement()) {
-			//Se ejecuta la sentencia de borrado de datos
-			String sql = "DELETE FROM MULTIMEDIA;";			
-			int result = stmt.executeUpdate(sql);
-			
-			System.out.println(String.format("- Se han borrado %d multimedias", result));
-		} catch (Exception ex) {
-			System.err.println(String.format("* Error al borrar datos de la BBDD: %s", ex.getMessage()));
-			ex.printStackTrace();						
-		}		
-	}
-	
-	public void actualizarNombre(Multimedia multimedia, String newNombre) {
-		//Se abre la conexión y se obtiene el Statement
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-		     Statement stmt = con.createStatement()) {
-			//Se ejecuta la sentencia de borrado de datos
-			String sql = "UPDATE MULTIMEDIA SET NOMBRE = '%s' WHERE ID = %d;";
-			
-			int result = stmt.executeUpdate(String.format(sql, newNombre, multimedia.getId()));
-			
-			System.out.println(String.format("- Se ha actulizado %d multimedias", result));
-		} catch (Exception ex) {
-			System.err.println(String.format("* Error actualizando datos de la BBDD: %s", ex.getMessage()));
-			ex.printStackTrace();						
-		}		
+		return listademedia;
 	}
 	
 	public static void llenarPlaylist() {
@@ -359,7 +205,7 @@ public class DeustoMusic {
 		Multimedia relleno;
 		//El titulo y las canciones tendremos que añadirlas desde la ventana, esto es una comprobación
 		for (int i = 0; i < 3; i++) {
-			titulo = i+"";
+			titulo = "Lista" + i;
 			playlist.put(titulo, new ArrayList<Multimedia>());
 			for (int j = 0; j < 3; j++) {
 				relleno = listademedia.get("Canciones").get( (int) (Math.random()*25+1));
@@ -370,8 +216,7 @@ public class DeustoMusic {
 		
 		System.out.println(playlist);
 	}
-	
-	
+		
 	public static void meterUsuario() {
 		Usuario usuario;
 		for (int i = 0; i < 3; i++) {
@@ -380,7 +225,6 @@ public class DeustoMusic {
 		}
 		System.out.println(usuarios);
 	}
-	
 	
 	//Queria meter una playlist en cada usuario pero ns como
 	public static void usuarioPlaylist( ) {
@@ -394,28 +238,5 @@ public class DeustoMusic {
 			
 	}
 	
-		//Sin terminar
-	/*public static void guardarDatos() {
-		int posicion =-1;
-		String listaposicion = "Lista"+posicion;
-		try {
-			PrintWriter pw = new PrintWriter("usuarios.csv");
-			for (Usuario usuario : usuarios) {
-				for (TreeMap<String, ArrayList<Multimedia>> lista : listaporusuario.get(usuario)) {
-					posicion++;
-					//posicion+"";
-					for (Multimedia multimedia : lista.get(listaposicion)) {
-						
-						pw.println(multimedia);
-					}
-				}
-			}
-			
-			
-			pw.close();
-		} catch (FileNotFoundException e) {
-			System.err.println("Error al guardar datos CSV.");
-		}
-	}	*/
 }
 

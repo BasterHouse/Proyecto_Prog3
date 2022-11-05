@@ -1,3 +1,4 @@
+package clases;
 
 public class Multimedia {
 	protected String nombre;
@@ -62,7 +63,7 @@ public class Multimedia {
 	@Override
 	public String toString() {
 		return "Multimedia [nombre=" + nombre + ", artista=" + artista + ", duracion=" + duracion + ", reproducciones="
-				+ reproducciones + ", megusta=" + megusta + ", id=" + id + "]";
+				+ reproducciones + ", megusta=" + megusta + "]";
 	}
 	
 	
