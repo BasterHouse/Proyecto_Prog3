@@ -200,7 +200,7 @@ public class DeustoMusic {
 		return listademedia;
 	}
 	
-	public static void llenarPlaylist() {
+	public void llenarPlaylist() {
 		String titulo;
 		Multimedia relleno;
 		//El titulo y las canciones tendremos que añadirlas desde la ventana, esto es una comprobación
@@ -217,7 +217,7 @@ public class DeustoMusic {
 		System.out.println(playlist);
 	}
 		
-	public static void meterUsuario() {
+	public void meterUsuario() {
 		Usuario usuario;
 		for (int i = 0; i < 3; i++) {
 			usuario = new Usuario("Usuario" + i+"", "usuario"+i+""+"gmail.com", i+"");
@@ -227,7 +227,7 @@ public class DeustoMusic {
 	}
 	
 	//Queria meter una playlist en cada usuario pero ns como
-	public static void usuarioPlaylist( ) {
+	public void usuarioPlaylist( ) {
 		for (Usuario usuario : usuarios) {
 				listaporusuario.put(usuario, new ArrayList<TreeMap<String, ArrayList<Multimedia>>>());
 				for (TreeMap<String, ArrayList<Multimedia>> playlist : listaPlaylist) {

@@ -27,9 +27,9 @@ public class Main {
 			}
 		}
 		
-		//deustomusic.llenarPlaylist();
-		//deustomusic.meterUsuario();
-		//deustomusic.usuarioPlaylist();
+		deustomusic.llenarPlaylist();
+		deustomusic.meterUsuario();
+		deustomusic.usuarioPlaylist();
 		//BASE DE DATOS DE LAS CANCIONES
 		gestor.crearBBDDCancion();
 		gestor.insertarDatosCancion(canciones.toArray(new Cancion[canciones.size()]));
