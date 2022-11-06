@@ -226,14 +226,14 @@ public class DeustoMusic {
 		System.out.println(usuarios);
 	}
 	
-	//Queria meter una playlist en cada usuario pero ns como
+	
 	public void usuarioPlaylist( ) {
 		for (Usuario usuario : usuarios) {
 				listaporusuario.put(usuario, new ArrayList<TreeMap<String, ArrayList<Multimedia>>>());
 				for (TreeMap<String, ArrayList<Multimedia>> playlist : listaPlaylist) {
 					listaporusuario.get(usuario).add(playlist);
 				}
-		}System.out.println(listaporusuario);
+		};
 		
 			
 	}
