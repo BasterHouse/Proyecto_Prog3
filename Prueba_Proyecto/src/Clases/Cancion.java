@@ -1,3 +1,4 @@
+package Clases;
 
 public class Cancion extends Multimedia{
 	protected Genero genero;

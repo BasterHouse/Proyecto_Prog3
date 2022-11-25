@@ -1,9 +1,13 @@
+package Tests;
 
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import Clases.Podcast;
+import Clases.Tema;
 
 public class TestPodcast {
     protected Tema tema = Tema.HUMOR;
@@ -16,8 +20,8 @@ public class TestPodcast {
 
     @Test
     public void testToString() {
-        String toString= "Podcast [tema=" + tema + ", nombre=" + podcast.nombre + ", artista=" + podcast.artista + ", duracion=" + podcast.duracion
-                + ", reproducciones=" + podcast.reproducciones + ", megusta=" + podcast.megusta + "]";
+        String toString= "Podcast [tema=" + tema + ", nombre=" + podcast.getNombre() + ", artista=" + podcast.getArtista() + ", duracion=" + podcast.getDuracion()
+                + ", reproducciones=" + podcast.getReproducciones() + ", megusta=" + podcast.getMegusta() + "]";
         assertEquals(podcast.toString(),toString);
     }
 

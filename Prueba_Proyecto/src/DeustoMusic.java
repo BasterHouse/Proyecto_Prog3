@@ -20,6 +20,11 @@ import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
+import Clases.Cancion;
+import Clases.Multimedia;
+import Clases.Podcast;
+import Clases.Usuario;
+
 
 //Algunas de las funciones han tenido que ser static por el momento, 
 //cuando añadamos las ventanas se harán algunos cambios, por eso dejamos los warnings

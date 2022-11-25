@@ -1,8 +1,12 @@
+package Tests;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import Clases.Cancion;
+import Clases.Genero;
 
 public class TestCancion {
 	protected Genero genero = Genero.ACOUSTIC_POP;
