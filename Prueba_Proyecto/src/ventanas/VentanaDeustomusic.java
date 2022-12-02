@@ -2,12 +2,23 @@ package ventanas;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+
+import clases.Cancion;
+import clases.Multimedia;
+
 import javax.swing.JLabel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.Font;
+import javax.swing.JList;
+import clave.DeustoMusic;
 
 public class VentanaDeustomusic extends JFrame{
-	public VentanaDeustomusic() {
+	public VentanaDeustomusic(DeustoMusic deustomusic) {
+		setTitle("DeustoMusic");
+		setSize(600, 400);
+		setLocationRelativeTo(null);
+		
 		getContentPane().setLayout(null);
 		
 		JScrollPane multimedias = new JScrollPane();
@@ -51,5 +62,14 @@ public class VentanaDeustomusic extends JFrame{
 		JButton informacion = new JButton("Información");
 		informacion.setBounds(10, 208, 97, 23);
 		getContentPane().add(informacion);
+		
+		JList list = new JList();
+		list.setBounds(167, 270, 229, 41);
+		DefaultListModel<Multimedia> modelo = new DefaultListModel<>();
+		for (Multimedia c: deustomusic.getListademedia().get("Canciones")) {
+			modelo.addElement(c);
+		}
+		list.setModel(modelo);
+		getContentPane().add(list);
 	}
 }

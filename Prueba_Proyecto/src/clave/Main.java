@@ -1,3 +1,4 @@
+package clave;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -5,6 +6,7 @@ import java.util.TreeMap;
 import clases.Cancion;
 import clases.Multimedia;
 import clases.Podcast;
+import ventanas.VentanaDeustomusic;
 
 //ALGUNAS DE LAS FUNCIONES ESTÁN COMENTADAS PORQUE SE USARÁN MÁS ADELANTE JUNTO CON LAS VENTANAS
 public class Main {
@@ -13,6 +15,8 @@ public class Main {
 		GestorBBDD gestor = new GestorBBDD();
 		List<Cancion> canciones = new ArrayList<Cancion>();
 		List<Podcast> podcasts = new ArrayList<Podcast>();
+		
+		
 		
 		TreeMap<String, ArrayList<Multimedia>> listademedia =deustomusic.inicializar();
 		for (Multimedia cancion : listademedia.get("Canciones")) {
@@ -47,7 +51,15 @@ public class Main {
 		podcasts = gestor.obtenerDatosPodcast();
 		gestor.borrarDatosPodcast();
 		gestor.borrarBBDDPodcast();
+		
+		VentanaDeustomusic ventanamusic = new VentanaDeustomusic(deustomusic);
+		ventanamusic.setVisible(true);	
 	}
+	
+	//public void ventanaMusic (DeustoMusic deustomusic) {
+	//	VentanaDeustomusic ventanamusic = new VentanaDeustomusic(deustomusic);
+	//	ventanamusic.setVisible(true);	
+	//}
 	
 	
 }
