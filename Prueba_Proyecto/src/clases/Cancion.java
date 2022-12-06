@@ -23,8 +23,7 @@ public class Cancion extends Multimedia{
 
 	@Override
 	public String toString() {
-		return "Cancion [genero=" + genero + ", nombre=" + nombre + ", artista=" + artista + ", duracion=" + duracion
-				+ ", reproducciones=" + reproducciones + ", megusta=" + megusta + "]";
+		return nombre + " (" + artista + ")"; 
 	}
 
 

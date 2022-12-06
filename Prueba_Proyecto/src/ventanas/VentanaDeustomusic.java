@@ -5,6 +5,7 @@ import javax.swing.JScrollPane;
 
 import clases.Cancion;
 import clases.Multimedia;
+import clases.Podcast;
 
 import javax.swing.JLabel;
 import javax.swing.DefaultListModel;
@@ -12,41 +13,64 @@ import javax.swing.JButton;
 import java.awt.Font;
 import javax.swing.JList;
 import clave.DeustoMusic;
+
+
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
 
 public class VentanaDeustomusic extends JFrame{
+	protected DefaultListModel<Cancion> modeloCanciones;
+	protected JList<Cancion> listaCanciones;
+	protected DefaultListModel<Podcast> modeloPodcast;
+	protected JList<Podcast> listaPodcast;
+	
+	
 	public VentanaDeustomusic(DeustoMusic deustomusic) {
 		setTitle("DeustoMusic");
 		setSize(600, 400);
 		setLocationRelativeTo(null);
 		
+		
 		getContentPane().setLayout(null);
 		
-		JScrollPane multimedias = new JScrollPane();
-		multimedias.setBounds(167, 18, 269, 86);
-		getContentPane().add(multimedias);
+		modeloCanciones = new DefaultListModel<Cancion>();
 		
-		JLabel titulomultimedias = new JLabel("Todo el contenido🎵");
-		multimedias.setColumnHeaderView(titulomultimedias);
+		for (Multimedia cancion : deustomusic.getListademedia().get("Canciones")) {
+			if (cancion instanceof Cancion) {
+				modeloCanciones.addElement((Cancion)cancion);
+			}
+		}
+	
+		listaCanciones = new JList(modeloCanciones);
+		listaCanciones.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane scrollCanciones = new JScrollPane(listaCanciones);
+		scrollCanciones.setBounds(200, 38, 336, 116);
+		getContentPane().add(scrollCanciones);
+		JLabel titulomultimedias = new JLabel("Todas las canciones🎵");
+        scrollCanciones.setColumnHeaderView(titulomultimedias);
+        
+        modeloPodcast = new DefaultListModel<Podcast>();
 		
-		JScrollPane favoritas = new JScrollPane();
-		favoritas.setBounds(167, 134, 269, 86);
-		getContentPane().add(favoritas);
-		
-		JLabel titulofavoritas = new JLabel("Favoritas❤");
-		favoritas.setColumnHeaderView(titulofavoritas);
-		
-		JScrollPane playlists = new JScrollPane();
-		playlists.setBounds(167, 251, 269, 86);
-		getContentPane().add(playlists);
-		
-		JLabel tituloplaylists = new JLabel("Tus Playlists📃");
-		playlists.setColumnHeaderView(tituloplaylists);
-		
+		for (Multimedia podcast : deustomusic.getListademedia().get("Podcasts")) {
+			if (podcast instanceof Podcast) {
+				modeloPodcast.addElement((Podcast)podcast);
+			}
+		}
+	
+		listaPodcast = new JList(modeloPodcast);
+		listaPodcast.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane scrollPodcast = new JScrollPane(listaPodcast);
+		scrollPodcast.setBounds(202, 185, 334, 78);
+		getContentPane().add(scrollPodcast);
+		JLabel titulopodcast = new JLabel("Todas los Podcast🎵");
+        scrollPodcast.setColumnHeaderView(titulopodcast);
+        
+        
+        
 		JLabel titulogeneral = new JLabel("DeustoMusic");
 		titulogeneral.setFont(new Font("Stencil", Font.PLAIN, 16));
-		titulogeneral.setBounds(10, 11, 147, 38);
+		titulogeneral.setBounds(10, 10, 147, 38);
 		getContentPane().add(titulogeneral);
 		
 		JButton buscar = new JButton("Buscar");
@@ -64,15 +88,13 @@ public class VentanaDeustomusic extends JFrame{
 		JButton informacion = new JButton("Información");
 		informacion.setBounds(10, 271, 117, 35);
 		getContentPane().add(informacion);
-
-		JList list = new JList();
-		list.setBounds(167, 270, 229, 41);
-		DefaultListModel<Multimedia> modelo = new DefaultListModel<>();
-		for (Multimedia c: deustomusic.getListademedia().get("Canciones")) {
-			modelo.addElement(c);
-		}
-		list.setModel(modelo);
-		getContentPane().add(list);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(535, 185, -334, 78);
+		getContentPane().add(scrollPane);
+		
+		
+		
 		
 		
 	}

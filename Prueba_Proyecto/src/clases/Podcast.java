@@ -26,8 +26,7 @@ public class Podcast extends Multimedia{
 
 	@Override
 	public String toString() {
-		return "Podcast [tema=" + tema + ", nombre=" + nombre + ", artista=" + artista + ", duracion=" + duracion
-				+ ", reproducciones=" + reproducciones + ", megusta=" + megusta + "]";
+		return nombre + " (" + artista + ")";
 	}
 
 }
