@@ -10,6 +10,7 @@ import clases.Usuario;
 
 
 public class TestUsuario {
+	protected int id = 0;
 	protected String nick = "nick";
     protected String gmail = "gmail";
     protected String contraseña = "contraseña";
@@ -18,6 +19,7 @@ public class TestUsuario {
     @Before
     public void iniciar() {
         usuario =new Usuario();
+        usuario.setId(id);
         usuario.setContraseña(contraseña);
         usuario.setGmail(gmail);
         usuario.setNick(nick);
@@ -25,8 +27,9 @@ public class TestUsuario {
 
     @Test
     public void testUsuarioStringStringString() {
-    	Usuario usuario2=new Usuario("nick", "gmail", "contraseña");
+    	Usuario usuario2=new Usuario(0, "nick", "gmail", "contraseña");
 		assertNotNull(usuario2);
+		assertEquals(usuario2.getId(), 0);
 		assertEquals(usuario2.getContraseña(), "contraseña");
 		assertEquals(usuario2.getGmail(), "gmail");
 		assertEquals(usuario2.getNick(), "nick");
@@ -36,11 +39,25 @@ public class TestUsuario {
     public void testUsuario() {
         Usuario usuario2 = new Usuario();
         assertNotNull(usuario2);
+        assertEquals(usuario2.getId(), 0,0.0);
         assertEquals(usuario2.getContraseña(), "");
         assertEquals(usuario2.getGmail(), "");
         assertEquals(usuario2.getNick(), "");
     }
 
+    @Test
+    public void testGetId() {
+        assertEquals(usuario.getId(), id, 0.0);
+    }
+
+    @Test
+    public void testSetId() {
+        Integer newid = 1;
+        assertEquals(usuario.getId(), id, 0.0);
+        usuario.setId(newid);
+        assertEquals(usuario.getId(), newid,0.0 );
+    }
+       
     @Test
     public void testGetNick() {
         assertEquals(usuario.getNick(), nick);

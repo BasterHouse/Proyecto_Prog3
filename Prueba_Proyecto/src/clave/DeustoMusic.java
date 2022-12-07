@@ -218,14 +218,7 @@ public class DeustoMusic {
 		System.out.println(playlist);
 	}
 		
-	public void meterUsuario() {
-		Usuario usuario;
-		for (int i = 0; i < 3; i++) {
-			usuario = new Usuario("Usuario" + i+"", "usuario"+i+""+"gmail.com", i+"");
-			usuarios.add(usuario);
-		}
-		System.out.println(usuarios);
-	}
+	
 	
 	
 	public void usuarioPlaylist( ) {

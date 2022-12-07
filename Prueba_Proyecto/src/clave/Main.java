@@ -6,7 +6,9 @@ import java.util.TreeMap;
 import clases.Cancion;
 import clases.Multimedia;
 import clases.Podcast;
+import clases.Usuario;
 import ventanas.VentanaDeustomusic;
+import ventanas.VentanaPrinc;
 
 //ALGUNAS DE LAS FUNCIONES ESTÁN COMENTADAS PORQUE SE USARÁN MÁS ADELANTE JUNTO CON LAS VENTANAS
 public class Main {
@@ -15,7 +17,7 @@ public class Main {
 		GestorBBDD gestor = new GestorBBDD();
 		List<Cancion> canciones = new ArrayList<Cancion>();
 		List<Podcast> podcasts = new ArrayList<Podcast>();
-		
+		List<Usuario> usuarios = new ArrayList<Usuario>();
 		
 		
 		TreeMap<String, ArrayList<Multimedia>> listademedia =deustomusic.inicializar();
@@ -32,8 +34,8 @@ public class Main {
 		}
 		
 		deustomusic.llenarPlaylist();
-		deustomusic.meterUsuario();
 		deustomusic.usuarioPlaylist();
+		
 		//BASE DE DATOS DE LAS CANCIONES
 		gestor.crearBBDDCancion();
 		gestor.insertarDatosCancion(canciones.toArray(new Cancion[canciones.size()]));
@@ -54,12 +56,19 @@ public class Main {
 		
 		VentanaDeustomusic ventanamusic = new VentanaDeustomusic(deustomusic);
 		ventanamusic.setVisible(true);	
+		VentanaPrinc princ = new VentanaPrinc();
+		princ.setVisible(true);	
 	}
 	
-	//public void ventanaMusic (DeustoMusic deustomusic) {
-	//	VentanaDeustomusic ventanamusic = new VentanaDeustomusic(deustomusic);
-	//	ventanamusic.setVisible(true);	
-	//}
+	public void meterUsuario(VentanaPrinc princ){
+		if (princ.nick == null || princ.gmail == null || princ.contraseña == null) {
+			System.err.println("Rellene todos los huecos"); 
+		}else {
+			
+		}
+		
+	}
+
 	
 	
 }

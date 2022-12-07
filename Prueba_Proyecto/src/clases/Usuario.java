@@ -1,13 +1,16 @@
 package clases;
 
 public class Usuario implements Comparable{
+	protected int id;
 	protected String nick;
 	protected String gmail;
 	protected String contraseña;
+
 	
 	
-	public Usuario(String nick, String gmail, String contraseña) {
+	public Usuario(int id, String nick, String gmail, String contraseña) {
 		super();
+		this.id = id;
 		this.nick = nick;
 		this.gmail = gmail;
 		this.contraseña = contraseña;
@@ -15,11 +18,19 @@ public class Usuario implements Comparable{
 	
 	public Usuario() {
 		super();
+		this.id = 00;
 		this.nick = "";
 		this.gmail = "";
 		this.contraseña = "";
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 	public String getNick() {
 		return nick;
 	}

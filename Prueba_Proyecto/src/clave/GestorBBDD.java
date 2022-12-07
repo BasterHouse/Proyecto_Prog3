@@ -13,6 +13,7 @@ import clases.Genero;
 import clases.Multimedia;
 import clases.Podcast;
 import clases.Tema;
+import clases.Usuario;
 
 public class GestorBBDD {
 	protected static final String DRIVER_NAME = "org.sqlite.JDBC";
@@ -20,6 +21,141 @@ public class GestorBBDD {
 	protected static final String CONNECTION_STRING_CANCION = "jdbc:sqlite:" + DATABASE_FILE_CANCION;
 	protected static final String DATABASE_FILE_PODCAST = "db/databasepodcast.db";
 	protected static final String CONNECTION_STRING_PODCAST = "jdbc:sqlite:" + DATABASE_FILE_PODCAST;
+	protected static final String DATABASE_FILE_USUARIO = "db/databaseusuario.db";
+	protected static final String CONNECTION_STRING_USUARIO = "jdbc:sqlite:" + DATABASE_FILE_USUARIO;
+	
+	public void crearBBDDUsuario() {
+		//Se abre la conexión y se obtiene el Statement
+		//Al abrir la conexión, si no existía el fichero, se crea la base de datos
+		try (Connection con = DriverManager.getConnection(CONNECTION_STRING_USUARIO);
+		     Statement stmt = con.createStatement()) {
+			
+	        String sql = "CREATE TABLE IF NOT EXISTS USUARIO (\n"
+	        		   + " ID INTEGER PRIMARY KEY AUTOINCREMENT,\n"
+	                   + " NICK TEXT NOT NULL,\n"
+	                   + " GMAIL TEXT NOT NULL,\n"
+	                   + " CONTRASEÑA TEXT NOT NULL, \n"
+	                   + ");";
+	        	        
+	        if (!stmt.execute(sql)) {
+	        	System.out.println("- Se ha creado la tabla Usuario");
+	        }
+		} catch (Exception ex) {
+			System.err.println(String.format("* Error al crear la BBDD: %s", ex.getMessage()));
+			ex.printStackTrace();			
+		}
+	}
+	
+	
+	
+	public void borrarBBDDUsuario() {
+		//Se abre la conexión y se obtiene el Statement
+		try (Connection con = DriverManager.getConnection(CONNECTION_STRING_USUARIO);
+		     Statement stmt = con.createStatement()) {
+			
+	        String sql = "DROP TABLE IF EXISTS USUARIO";
+			
+	        //Se ejecuta la sentencia de creación de la tabla Estudiantes
+	        if (!stmt.execute(sql)) {
+	        	System.out.println("- Se ha borrado la tabla Usuario");
+	        }
+		} catch (Exception ex) {
+			System.err.println(String.format("* Error al borrar la BBDD: %s", ex.getMessage()));
+			ex.printStackTrace();			
+		}
+		
+		try {
+			//Se borra el fichero de la BBDD
+			Files.delete(Paths.get(DATABASE_FILE_USUARIO));
+			System.out.println("- Se ha borrado el fichero de la BBDD");
+		} catch (Exception ex) {
+			System.err.println(String.format("* Error al borrar el archivo de la BBDD: %s", ex.getMessage()));
+			ex.printStackTrace();						
+		}
+	}
+	
+	
+	public void insertarDatosUsuario(Usuario...usuarios) {
+		//Se abre la conexión y se obtiene el Statement
+		try (Connection con = DriverManager.getConnection(CONNECTION_STRING_USUARIO);
+		     Statement stmt = con.createStatement()) {
+			//Se define la plantilla de la sentencia SQL
+			String sql = "INSERT INTO USUARIO (ID, NICK, GMAIL, CONTRASEÑA) VALUES ('%d', %s', '%s', '%s');";
+			
+			System.out.println("- Insertando usuario...");
+			
+			//Se recorren los multimedias y se insertan uno a uno
+			for (Usuario c : usuarios) {
+					if (1 == stmt.executeUpdate(String.format(sql, c.getId(), c.getNick(), c.getGmail(), c.getContraseña()))) {					
+					System.out.println(String.format(" - Usuario insertada: %s", c.toString()));
+					} else {
+					System.out.println(String.format(" - No se ha insertado la usuario: %s", c.toString()));
+					}
+				}
+			} catch (SQLException ex) {
+				System.err.println(String.format("* Error al insertar datos de la BBDD: %s", ex.getMessage()));
+				ex.printStackTrace();	
+			}	
+			
+		}		
+	
+	
+	public ArrayList<Usuario> obtenerDatosUsuario() {
+		ArrayList<Usuario> usuarios = new ArrayList<>();
+		
+		//Se abre la conexión y se obtiene el Statement
+		try (Connection con = DriverManager.getConnection(CONNECTION_STRING_USUARIO);
+		     Statement stmt = con.createStatement()) {
+			String sql = "SELECT * FROM USUARIO WHERE ID >= 0";
+			
+			//Se ejecuta la sentencia y se obtiene el ResultSet con los resutlados
+			ResultSet rs = stmt.executeQuery(sql);			
+			Usuario usuario;
+			
+			//Se recorre el ResultSet y se crean objetos Cliente
+			while (rs.next()) {
+				usuario = new Usuario();
+				
+				usuario.setId(rs.getInt("ID"));
+				usuario.setNick(rs.getString("NICK"));
+				usuario.setGmail(rs.getString("GMAIL"));
+				usuario.setContraseña(rs.getString("CONTRASEÑA"));
+
+				
+				//Se inserta cada nuevo cliente en la lista de clientes
+				usuarios.add(usuario);
+			}
+			
+			//Se cierra el ResultSet
+			rs.close();
+			
+			System.out.println(String.format("- Se han recuperado %d canciones...", usuarios.size()));			
+		} catch (Exception ex) {
+			System.err.println(String.format("* Error al obtener datos de la BBDD: %s", ex.getMessage()));
+			ex.printStackTrace();						
+		}		
+		
+		return usuarios;
+	}
+	
+	public void borrarDatosUsuario() {
+		//Se abre la conexión y se obtiene el Statement
+		try (Connection con = DriverManager.getConnection(CONNECTION_STRING_USUARIO);
+		     Statement stmt = con.createStatement()) {
+			//Se ejecuta la sentencia de borrado de datos
+			String sql = "DELETE FROM USUARIOS;";			
+			int result = stmt.executeUpdate(sql);
+			
+			System.out.println(String.format("- Se han borrado %d usuarios", result));
+		} catch (Exception ex) {
+			System.err.println(String.format("* Error al borrar datos de la BBDD: %s", ex.getMessage()));
+			ex.printStackTrace();						
+		}		
+	}
+	
+	
+	
+	//--------------------------------------------------------------------------------------------------------------------------------------
 	
 	
 	public void crearBBDDCancion() {
