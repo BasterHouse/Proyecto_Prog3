@@ -26,7 +26,7 @@ public class VentanaDeustomusic extends JFrame{
 	protected JList<Podcast> listaPodcast;
 	
 	
-	public VentanaDeustomusic(DeustoMusic deustomusic) {
+	public VentanaDeustomusic(VentanaPrinc v) {
 		setTitle("DeustoMusic");
 		setSize(600, 400);
 		setLocationRelativeTo(null);
@@ -36,7 +36,7 @@ public class VentanaDeustomusic extends JFrame{
 		
 		modeloCanciones = new DefaultListModel<Cancion>();
 		
-		for (Multimedia cancion : deustomusic.getListademedia().get("Canciones")) {
+		for (Multimedia cancion : v.getListademedia().get("Canciones")) {
 			if (cancion instanceof Cancion) {
 				modeloCanciones.addElement((Cancion)cancion);
 			}
@@ -52,7 +52,7 @@ public class VentanaDeustomusic extends JFrame{
         
         modeloPodcast = new DefaultListModel<Podcast>();
 		
-		for (Multimedia podcast : deustomusic.getListademedia().get("Podcasts")) {
+		for (Multimedia podcast : v.getListademedia().get("Podcasts")) {
 			if (podcast instanceof Podcast) {
 				modeloPodcast.addElement((Podcast)podcast);
 			}

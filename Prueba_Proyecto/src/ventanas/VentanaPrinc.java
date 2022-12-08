@@ -40,6 +40,8 @@ public class VentanaPrinc extends JFrame{
 	List<Podcast> podcasts = new ArrayList<Podcast>();
 	List<Usuario> usuarios = new ArrayList<Usuario>();
 	
+	static VentanaPrinc v = new VentanaPrinc();
+	
 	
 	TreeMap<String, ArrayList<Multimedia>> listademedia = deustomusic.inicializar();
 	
@@ -47,6 +49,8 @@ public class VentanaPrinc extends JFrame{
 	
 
 	public VentanaPrinc() {
+		
+		
 		
 		for (Multimedia cancion : listademedia.get("Canciones")) {
 			if (cancion instanceof Cancion) {
@@ -59,6 +63,35 @@ public class VentanaPrinc extends JFrame{
 				podcasts.add((Podcast)podcast);
 			}
 		}
+		
+		deustomusic.llenarPlaylist();
+		deustomusic.usuarioPlaylist();
+		
+		//BASE DE DATOS DE LAS CANCIONES
+		gestor.crearBBDDCancion();
+		gestor.insertarDatosCancion(canciones.toArray(new Cancion[canciones.size()]));
+		canciones = gestor.obtenerDatosCancion();
+		gestor.actualizarNombreCancion(canciones.get(0), "BorjaTeQueremos");
+		canciones = gestor.obtenerDatosCancion();
+		gestor.borrarDatosCancion();
+		gestor.borrarBBDDCancion();
+		
+		//BASE DE DATOS DE LOS USUARIOS
+		gestor.crearBBDDUsuario();
+//		gestor.insertarDatosUsuario(usuarios.toArray(new Usuario[usuarios.size()]));
+		usuarios = gestor.obtenerDatosUsuario();
+//		gestor.actualizarNombreUsuario(usuarios.get(0), "BorjaTeQueremos");
+		usuarios = gestor.obtenerDatosUsuario();
+		System.out.println(usuarios);
+				
+		//BASE DE DATOS DE LOS PODCASTS
+		gestor.crearBBDDPodcast();
+		gestor.insertarDatosPodcast(podcasts.toArray(new Podcast[podcasts.size()]));
+		podcasts = gestor.obtenerDatosPodcast();
+		gestor.actualizarNombrePodcast(podcasts.get(0), "BorjaTeQueremos");
+		podcasts = gestor.obtenerDatosPodcast();
+		gestor.borrarDatosPodcast();
+		gestor.borrarBBDDPodcast();
 		
 		setTitle("DeustoMusic");
 		setSize(600, 400);
@@ -139,6 +172,7 @@ public class VentanaPrinc extends JFrame{
 					System.err.println("Rellene todos los huecos"); 
 				}else {
 					Usuario nuevo = new Usuario(usuarios.size(), nick, gmail, contraseña);
+					usuarios.add(nuevo);
 					gestor.insertarDatosUsuario(nuevo);
 				}
 				
@@ -146,43 +180,35 @@ public class VentanaPrinc extends JFrame{
 				
 			
 		});
-		deustomusic.llenarPlaylist();
-		deustomusic.usuarioPlaylist();
 		
-		//BASE DE DATOS DE LAS CANCIONES
-		gestor.crearBBDDCancion();
-		gestor.insertarDatosCancion(canciones.toArray(new Cancion[canciones.size()]));
-		canciones = gestor.obtenerDatosCancion();
-		gestor.actualizarNombreCancion(canciones.get(0), "BorjaTeQueremos");
-		canciones = gestor.obtenerDatosCancion();
-		gestor.borrarDatosCancion();
-		gestor.borrarBBDDCancion();
 		
-		//BASE DE DATOS DE LOS PODCASTS
-		gestor.crearBBDDPodcast();
-		gestor.insertarDatosPodcast(podcasts.toArray(new Podcast[podcasts.size()]));
-		podcasts = gestor.obtenerDatosPodcast();
-		gestor.actualizarNombrePodcast(podcasts.get(0), "BorjaTeQueremos");
-		podcasts = gestor.obtenerDatosPodcast();
-		gestor.borrarDatosPodcast();
-		gestor.borrarBBDDPodcast();
-		
-		VentanaDeustomusic ventanamusic = new VentanaDeustomusic(deustomusic);
+		VentanaDeustomusic ventanamusic = new VentanaDeustomusic(v);
 		ventanamusic.setVisible(true);	
 	}
 	
 		
 
+	
+	public TreeMap<String, ArrayList<Multimedia>> getListademedia() {
+		return listademedia;
+	}
 
-	
-	
+
+
+
+	public void setListademedia(TreeMap<String, ArrayList<Multimedia>> listademedia) {
+		this.listademedia = listademedia;
+	}
+
+
+
+
 	public void regis() {
 		nick = textNick.getText();
 		gmail = textGmail.getText();
 		contraseña = textContraseña.getText();
 	
 		
-
 	}
 	
 	public void crearUsu(){
@@ -197,7 +223,7 @@ public class VentanaPrinc extends JFrame{
 	}
 	
 	public static void main(String[] args) {
-		VentanaPrinc v = new VentanaPrinc();
+	
 		v.setVisible(true);
 	}
 }

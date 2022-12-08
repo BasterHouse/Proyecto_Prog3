@@ -34,7 +34,7 @@ public class GestorBBDD {
 	        		   + " ID INTEGER PRIMARY KEY AUTOINCREMENT,\n"
 	                   + " NICK TEXT NOT NULL,\n"
 	                   + " GMAIL TEXT NOT NULL,\n"
-	                   + " CONTRASEÑA TEXT NOT NULL, \n"
+	                   + " CONTRASEÑA TEXT NOT NULL \n"
 	                   + ");";
 	        	        
 	        if (!stmt.execute(sql)) {
@@ -80,12 +80,13 @@ public class GestorBBDD {
 		try (Connection con = DriverManager.getConnection(CONNECTION_STRING_USUARIO);
 		     Statement stmt = con.createStatement()) {
 			//Se define la plantilla de la sentencia SQL
-			String sql = "INSERT INTO USUARIO (ID, NICK, GMAIL, CONTRASEÑA) VALUES ('%d', %s', '%s', '%s');";
+			String sql = "INSERT INTO USUARIO (ID, NICK, GMAIL, CONTRASEÑA) VALUES ('%d', '%s', '%s', '%s');";
 			
 			System.out.println("- Insertando usuario...");
 			
 			//Se recorren los multimedias y se insertan uno a uno
 			for (Usuario c : usuarios) {
+				
 					if (1 == stmt.executeUpdate(String.format(sql, c.getId(), c.getNick(), c.getGmail(), c.getContraseña()))) {					
 					System.out.println(String.format(" - Usuario insertada: %s", c.toString()));
 					} else {
@@ -129,7 +130,7 @@ public class GestorBBDD {
 			//Se cierra el ResultSet
 			rs.close();
 			
-			System.out.println(String.format("- Se han recuperado %d canciones...", usuarios.size()));			
+			System.out.println(String.format("- Se han recuperado %d usuarios...", usuarios.size()));			
 		} catch (Exception ex) {
 			System.err.println(String.format("* Error al obtener datos de la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();						
