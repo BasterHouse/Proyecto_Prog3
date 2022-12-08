@@ -44,7 +44,7 @@ public class VentanaPrinc extends JFrame{
 	
 	
 	TreeMap<String, ArrayList<Multimedia>> listademedia = deustomusic.inicializar();
-	
+	TreeMap<String, ArrayList<Multimedia>> playlist = deustomusic.llenarPlaylist();
 	
 	
 
@@ -198,6 +198,20 @@ public class VentanaPrinc extends JFrame{
 
 	public void setListademedia(TreeMap<String, ArrayList<Multimedia>> listademedia) {
 		this.listademedia = listademedia;
+	}
+
+
+
+
+	public TreeMap<String, ArrayList<Multimedia>> getPlaylist() {
+		return playlist;
+	}
+
+
+
+
+	public void setPlaylist(TreeMap<String, ArrayList<Multimedia>> playlist) {
+		this.playlist = playlist;
 	}
 
 

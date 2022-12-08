@@ -24,6 +24,8 @@ public class VentanaDeustomusic extends JFrame{
 	protected JList<Cancion> listaCanciones;
 	protected DefaultListModel<Podcast> modeloPodcast;
 	protected JList<Podcast> listaPodcast;
+	protected DefaultListModel<Multimedia> modeloPlaylist;
+	protected JList<Multimedia> listaPlaylist;
 	
 	
 	public VentanaDeustomusic(VentanaPrinc v) {
@@ -45,7 +47,7 @@ public class VentanaDeustomusic extends JFrame{
 		listaCanciones = new JList(modeloCanciones);
 		listaCanciones.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollCanciones = new JScrollPane(listaCanciones);
-		scrollCanciones.setBounds(200, 38, 336, 116);
+		scrollCanciones.setBounds(200, 38, 336, 97);
 		getContentPane().add(scrollCanciones);
 		JLabel titulomultimedias = new JLabel("Todas las canciones🎵");
         scrollCanciones.setColumnHeaderView(titulomultimedias);
@@ -61,11 +63,22 @@ public class VentanaDeustomusic extends JFrame{
 		listaPodcast = new JList(modeloPodcast);
 		listaPodcast.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollPodcast = new JScrollPane(listaPodcast);
-		scrollPodcast.setBounds(202, 185, 334, 78);
+		scrollPodcast.setBounds(200, 163, 334, 86);
 		getContentPane().add(scrollPodcast);
 		JLabel titulopodcast = new JLabel("Todas los Podcast🎵");
         scrollPodcast.setColumnHeaderView(titulopodcast);
         
+        
+        /*modeloPlaylist = new DefaultListModel<Multimedia>();
+		for (Multimedia m : v.getPlaylist().get()) {
+				modeloPlaylist.addElement(m);
+		}
+	
+		listaPlaylist = new JList(modeloPlaylist);
+		listaPlaylist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollPlaylist = new JScrollPane();
+		scrollPlaylist.setBounds(199, 271, 337, 79);
+		getContentPane().add(scrollPlaylist);*/
         
         
 		JLabel titulogeneral = new JLabel("DeustoMusic");
@@ -89,9 +102,7 @@ public class VentanaDeustomusic extends JFrame{
 		informacion.setBounds(10, 271, 117, 35);
 		getContentPane().add(informacion);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(535, 185, -334, 78);
-		getContentPane().add(scrollPane);
+		
 		
 		
 		

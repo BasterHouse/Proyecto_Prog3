@@ -201,7 +201,7 @@ public class DeustoMusic {
 		return listademedia;
 	}
 	
-	public void llenarPlaylist() {
+	public TreeMap<String, ArrayList<Multimedia>> llenarPlaylist() {
 		String titulo;
 		Multimedia relleno;
 		//El titulo y las canciones tendremos que añadirlas desde la ventana, esto es una comprobación
@@ -215,7 +215,8 @@ public class DeustoMusic {
 			listaPlaylist.add(playlist);
 		}
 		
-		System.out.println(playlist);
+		
+		return playlist;
 	}
 		
 	
