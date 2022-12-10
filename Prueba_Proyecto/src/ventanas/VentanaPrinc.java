@@ -40,7 +40,7 @@ public class VentanaPrinc extends JFrame{
 	List<Podcast> podcasts = new ArrayList<Podcast>();
 	List<Usuario> usuarios = new ArrayList<Usuario>();
 	
-	static VentanaPrinc v = new VentanaPrinc();
+	
 	
 	
 	TreeMap<String, ArrayList<Multimedia>> listademedia = deustomusic.inicializar();
@@ -182,7 +182,7 @@ public class VentanaPrinc extends JFrame{
 		});
 		
 		
-		VentanaDeustomusic ventanamusic = new VentanaDeustomusic(v);
+		VentanaDeustomusic ventanamusic = new VentanaDeustomusic(deustomusic);
 		ventanamusic.setVisible(true);	
 	}
 	
@@ -237,7 +237,7 @@ public class VentanaPrinc extends JFrame{
 	}
 	
 	public static void main(String[] args) {
-	
+		VentanaPrinc v = new VentanaPrinc();
 		v.setVisible(true);
 	}
 }
