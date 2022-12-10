@@ -1,6 +1,6 @@
 package clases;
 
-public class Usuario implements Comparable{
+public class Usuario implements Comparable<Usuario>{
 	protected int id;
 	protected String nick;
 	protected String gmail;
@@ -60,11 +60,17 @@ public class Usuario implements Comparable{
 		return "Usuario [nick=" + nick + ", gmail=" + gmail + ", contraseña=" + contraseña + "]";
 	}
 
+
+
 	@Override
-	public int compareTo(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int compareTo(Usuario o) {
+		int res = 1;
+		if (this.getNick().equals(o.getNick()) && this.getGmail().equals(o.getGmail()) && this.getContraseña().equals(o.getContraseña())) {
+			res = 0;
+		}
+		return res;
 	}
+
 
 
 	

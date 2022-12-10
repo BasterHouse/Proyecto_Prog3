@@ -27,6 +27,7 @@ public class VentanaPrinc extends JFrame{
 	private JTextField textGmail;
 	private JTextField textContraseña;
 	private JButton registrar = new JButton("Registrar");
+	private JButton acceder = new JButton("Acceder");
 	private JLabel uno = new JLabel("Nick");
 	private JLabel dos = new JLabel("Gmail");
 	private JLabel tres = new JLabel("Contraseña");
@@ -34,13 +35,12 @@ public class VentanaPrinc extends JFrame{
 	private String gmail;
 	private String contraseña;
 	
+	
 	DeustoMusic deustomusic = new DeustoMusic();
 	GestorBBDD gestor = new GestorBBDD();
 	List<Cancion> canciones = new ArrayList<Cancion>();
 	List<Podcast> podcasts = new ArrayList<Podcast>();
 	List<Usuario> usuarios = new ArrayList<Usuario>();
-	
-	
 	
 	
 	TreeMap<String, ArrayList<Multimedia>> listademedia = deustomusic.inicializar();
@@ -77,9 +77,9 @@ public class VentanaPrinc extends JFrame{
 		gestor.borrarBBDDCancion();
 		
 		//BASE DE DATOS DE LOS USUARIOS
+		//gestor.borrarBBDDUsuario();
 		gestor.crearBBDDUsuario();
 //		gestor.insertarDatosUsuario(usuarios.toArray(new Usuario[usuarios.size()]));
-		usuarios = gestor.obtenerDatosUsuario();
 //		gestor.actualizarNombreUsuario(usuarios.get(0), "BorjaTeQueremos");
 		usuarios = gestor.obtenerDatosUsuario();
 		System.out.println(usuarios);
@@ -92,6 +92,8 @@ public class VentanaPrinc extends JFrame{
 		podcasts = gestor.obtenerDatosPodcast();
 		gestor.borrarDatosPodcast();
 		gestor.borrarBBDDPodcast();
+		
+		VentanaDeustomusic ventanamusic = new VentanaDeustomusic(deustomusic);
 		
 		setTitle("DeustoMusic");
 		setSize(600, 400);
@@ -113,33 +115,30 @@ public class VentanaPrinc extends JFrame{
 		getContentPane().add(crearusuario);
 		
 		textNick = new JTextField();
-		textNick.setBounds(296, 143, 120, 39);
+		textNick.setBounds(209, 144, 120, 39);
 		getContentPane().add(textNick);
-		
-	
-
 		textGmail= new JTextField();
-		textGmail.setBounds(296, 210, 120, 39);
+		textGmail.setBounds(209, 211, 120, 39);
 		getContentPane().add(textGmail);
-		
-		
 		textContraseña = new JTextField();
-		textContraseña.setBounds(296, 278, 120, 39);
+		textContraseña.setBounds(209, 279, 120, 39);
 		getContentPane().add(textContraseña);
 		textContraseña.setColumns(10);
 		
-		registrar.setBounds(460, 284, 117, 29);
+		registrar.setBounds(421, 216, 117, 29);
 		getContentPane().add(registrar);
+		acceder.setBounds(45, 216, 117, 29);
+		getContentPane().add(acceder);
 		
-		uno.setBounds(296, 131, 61, 16);
+		uno.setBounds(209, 128, 61, 16);
 		getContentPane().add(uno);
 		
 		
-		dos.setBounds(296, 194, 61, 16);
+		dos.setBounds(209, 194, 61, 16);
 		getContentPane().add(dos);
 		
 		
-		tres.setBounds(296, 261, 61, 16);
+		tres.setBounds(209, 261, 61, 16);
 		getContentPane().add(tres);
 		
 
@@ -147,9 +146,23 @@ public class VentanaPrinc extends JFrame{
 		textNick.setVisible(false);
 		textContraseña.setVisible(false);
 		registrar.setVisible(false);
+		acceder.setVisible(false);
 		uno.setVisible(false);
 		dos.setVisible(false);
 		tres.setVisible(false);
+		
+		
+		
+		iniciarsesion.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				crearUsu();
+				acceder.setVisible(true);
+				registrar.setVisible(false);
+			}
+		});
+		
 		
 		
 		crearusuario.addActionListener(new ActionListener() {
@@ -157,9 +170,34 @@ public class VentanaPrinc extends JFrame{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			crearUsu();
+			registrar.setVisible(true);
+			acceder.setVisible(false);
 			
 		}
 	});
+		
+		acceder.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				nick = textNick.getText();
+				gmail = textGmail.getText();
+				contraseña = textContraseña.getText();
+				if (nick == null || gmail == null || contraseña == null) {
+					System.out.println("Rellene todos los huecos");
+				}else {
+					Usuario nuevo = new Usuario(usuarios.size(), nick, gmail, contraseña);
+					for (Usuario u : usuarios) {
+						if (nuevo.compareTo(u)== 0) {
+							ventanamusic.setVisible(true);	
+						} else  {
+							System.out.println("Este usuario no existe");
+						}
+					}
+				}
+			}
+		});
+		
 		
 		registrar.addActionListener(new ActionListener() {
 			
@@ -168,22 +206,31 @@ public class VentanaPrinc extends JFrame{
 			nick = textNick.getText();
 			gmail = textGmail.getText();
 			contraseña = textContraseña.getText();
+			boolean existe = false;
 				if (nick == null || gmail == null || contraseña == null) {
 					System.err.println("Rellene todos los huecos"); 
 				}else {
-					Usuario nuevo = new Usuario(usuarios.size(), nick, gmail, contraseña);
-					usuarios.add(nuevo);
-					gestor.insertarDatosUsuario(nuevo);
+					for (int i = 0; i < usuarios.size()+1; i++) {
+						existe = usuarios.contains(new Usuario(i, nick, gmail, contraseña));
+						if (existe) {
+						System.out.println("Este usuario ya existe");
+						break;
+						}
+					}
+					if(existe == false) {
+						Usuario nuevo = new Usuario(usuarios.size(), nick, gmail, contraseña);
+						usuarios.add(nuevo);
+						gestor.insertarDatosUsuario(nuevo);
+						ventanamusic.setVisible(true);
+					}
 				}
-				
 			}
-				
 			
 		});
 		
 		
-		VentanaDeustomusic ventanamusic = new VentanaDeustomusic(deustomusic);
-		ventanamusic.setVisible(true);	
+		
+
 	}
 	
 		
@@ -229,7 +276,6 @@ public class VentanaPrinc extends JFrame{
 		textGmail.setVisible(true);
 		textNick.setVisible(true);
 		textContraseña.setVisible(true);
-		registrar.setVisible(true);
 		uno.setVisible(true);
 		dos.setVisible(true);
 		tres.setVisible(true);
