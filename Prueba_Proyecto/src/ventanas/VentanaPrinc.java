@@ -203,18 +203,25 @@ public class VentanaPrinc extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-			nick = textNick.getText();
-			gmail = textGmail.getText();
+			String nick = textNick.getText();
+			String gmail = textGmail.getText();
 			contraseña = textContraseña.getText();
 			boolean existe = false;
-				if (nick == null || gmail == null || contraseña == null) {
+				if (nick == " " || gmail == " " || contraseña == " ") {
 					System.err.println("Rellene todos los huecos"); 
 				}else {
-					for (int i = 0; i < usuarios.size()+1; i++) {
-						existe = usuarios.contains(new Usuario(i, nick, gmail, contraseña));
-						if (existe) {
-						System.out.println("Este usuario ya existe");
-						break;
+					for (Usuario usuario : usuarios) {
+						if (usuario.getNick().equals(nick) && usuario.getGmail().equals(gmail)){
+							existe = true;
+							System.out.println("Este usuario ya existe");
+							break;
+						}
+					
+						//existe = usuarios.contains(nick);
+						//System.out.println(usuarios.contains(nick));
+						//if (existe) {
+						//System.out.println("Este usuario ya existe");
+					//	break;
 						}
 					}
 					if(existe == false) {
@@ -224,7 +231,7 @@ public class VentanaPrinc extends JFrame{
 						ventanamusic.setVisible(true);
 					}
 				}
-			}
+			//}
 			
 		});
 		
