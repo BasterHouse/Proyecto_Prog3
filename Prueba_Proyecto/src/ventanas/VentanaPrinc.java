@@ -2,6 +2,7 @@ package ventanas;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -34,6 +35,7 @@ public class VentanaPrinc extends JFrame{
 	private String nick;
 	private String gmail;
 	private String contraseña;
+	
 	
 	
 	DeustoMusic deustomusic = new DeustoMusic();
@@ -71,16 +73,16 @@ public class VentanaPrinc extends JFrame{
 		gestor.crearBBDDCancion();
 		gestor.insertarDatosCancion(canciones.toArray(new Cancion[canciones.size()]));
 		canciones = gestor.obtenerDatosCancion();
-		gestor.actualizarNombreCancion(canciones.get(0), "BorjaTeQueremos");
-		canciones = gestor.obtenerDatosCancion();
+		//gestor.actualizarNombreCancion(canciones.get(0), "BorjaTeQueremos");
+		//canciones = gestor.obtenerDatosCancion();
 		gestor.borrarDatosCancion();
 		gestor.borrarBBDDCancion();
 		
 		//BASE DE DATOS DE LOS USUARIOS
 		//gestor.borrarBBDDUsuario();
 		gestor.crearBBDDUsuario();
-//		gestor.insertarDatosUsuario(usuarios.toArray(new Usuario[usuarios.size()]));
-//		gestor.actualizarNombreUsuario(usuarios.get(0), "BorjaTeQueremos");
+		//gestor.insertarDatosUsuario(usuarios.toArray(new Usuario[usuarios.size()]));
+		//gestor.actualizarNombreUsuario(usuarios.get(0), "BorjaTeQueremos");
 		usuarios = gestor.obtenerDatosUsuario();
 		System.out.println(usuarios);
 				
@@ -88,8 +90,8 @@ public class VentanaPrinc extends JFrame{
 		gestor.crearBBDDPodcast();
 		gestor.insertarDatosPodcast(podcasts.toArray(new Podcast[podcasts.size()]));
 		podcasts = gestor.obtenerDatosPodcast();
-		gestor.actualizarNombrePodcast(podcasts.get(0), "BorjaTeQueremos");
-		podcasts = gestor.obtenerDatosPodcast();
+		//gestor.actualizarNombrePodcast(podcasts.get(0), "BorjaTeQueremos");
+		//podcasts = gestor.obtenerDatosPodcast();
 		gestor.borrarDatosPodcast();
 		gestor.borrarBBDDPodcast();
 		
@@ -107,11 +109,11 @@ public class VentanaPrinc extends JFrame{
 		getContentPane().add(titulo);
 		
 		JButton iniciarsesion = new JButton("Iniciar Sesion");
-		iniciarsesion.setBounds(86, 79, 105, 23);
+		iniciarsesion.setBounds(86, 79, 134, 23);
 		getContentPane().add(iniciarsesion);
 		
 		JButton crearusuario = new JButton("Crear Usuario");
-		crearusuario.setBounds(331, 79, 105, 23);
+		crearusuario.setBounds(331, 79, 134, 23);
 		getContentPane().add(crearusuario);
 		
 		textNick = new JTextField();
@@ -138,7 +140,7 @@ public class VentanaPrinc extends JFrame{
 		getContentPane().add(dos);
 		
 		
-		tres.setBounds(209, 261, 61, 16);
+		tres.setBounds(209, 261, 84, 16);
 		getContentPane().add(tres);
 		
 
@@ -183,15 +185,21 @@ public class VentanaPrinc extends JFrame{
 				nick = textNick.getText();
 				gmail = textGmail.getText();
 				contraseña = textContraseña.getText();
-				if (nick == null || gmail == null || contraseña == null) {
-					System.out.println("Rellene todos los huecos");
+				if (nick.equals("")|| gmail.equals("") || contraseña.equals("")) {
+					JOptionPane.showMessageDialog(getContentPane(),
+						    "Rellene todos los huecos",
+						    "Error",
+						    JOptionPane.ERROR_MESSAGE); 
 				}else {
 					Usuario nuevo = new Usuario(usuarios.size(), nick, gmail, contraseña);
 					for (Usuario u : usuarios) {
 						if (nuevo.compareTo(u)== 0) {
 							ventanamusic.setVisible(true);	
 						} else  {
-							System.out.println("Este usuario no existe");
+							JOptionPane.showMessageDialog(getContentPane(),
+								    "Este usuario no existe.",
+								    "Error",
+								    JOptionPane.ERROR_MESSAGE);
 						}
 					}
 				}
@@ -207,21 +215,22 @@ public class VentanaPrinc extends JFrame{
 			String gmail = textGmail.getText();
 			contraseña = textContraseña.getText();
 			boolean existe = false;
-				if (nick == " " || gmail == " " || contraseña == " ") {
-					System.err.println("Rellene todos los huecos"); 
+				if (nick.equals("")|| gmail.equals("")|| contraseña.equals("")) {
+					existe = true;
+					JOptionPane.showMessageDialog(getContentPane(),
+						    "Rellene todos los huecos",
+						    "Error",
+						    JOptionPane.ERROR_MESSAGE); 
 				}else {
 					for (Usuario usuario : usuarios) {
 						if (usuario.getNick().equals(nick) && usuario.getGmail().equals(gmail)){
 							existe = true;
-							System.out.println("Este usuario ya existe");
+							JOptionPane.showMessageDialog(getContentPane(),
+								    "Este usuario ya existe",
+								    "Error",
+								    JOptionPane.ERROR_MESSAGE); 
 							break;
 						}
-					
-						//existe = usuarios.contains(nick);
-						//System.out.println(usuarios.contains(nick));
-						//if (existe) {
-						//System.out.println("Este usuario ya existe");
-					//	break;
 						}
 					}
 					if(existe == false) {
@@ -231,7 +240,7 @@ public class VentanaPrinc extends JFrame{
 						ventanamusic.setVisible(true);
 					}
 				}
-			//}
+
 			
 		});
 		
