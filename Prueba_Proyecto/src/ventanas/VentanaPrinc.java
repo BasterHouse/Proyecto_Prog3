@@ -182,6 +182,7 @@ public class VentanaPrinc extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Boolean existe = false;
 				nick = textNick.getText();
 				gmail = textGmail.getText();
 				contraseña = textContraseña.getText();
@@ -194,13 +195,19 @@ public class VentanaPrinc extends JFrame{
 					Usuario nuevo = new Usuario(usuarios.size(), nick, gmail, contraseña);
 					for (Usuario u : usuarios) {
 						if (nuevo.compareTo(u)== 0) {
-							ventanamusic.setVisible(true);	
+							existe = true;	
+							break;
 						} else  {
-							JOptionPane.showMessageDialog(getContentPane(),
-								    "Este usuario no existe.",
-								    "Error",
-								    JOptionPane.ERROR_MESSAGE);
+							existe = false;
 						}
+					}
+					if (existe) {
+						ventanamusic.setVisible(true);
+					} else {
+						JOptionPane.showMessageDialog(getContentPane(),
+							    "Este usuario no existe.",
+							    "Error",
+							    JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}
@@ -225,15 +232,16 @@ public class VentanaPrinc extends JFrame{
 					for (Usuario usuario : usuarios) {
 						if (usuario.getNick().equals(nick) && usuario.getGmail().equals(gmail)){
 							existe = true;
-							JOptionPane.showMessageDialog(getContentPane(),
-								    "Este usuario ya existe",
-								    "Error",
-								    JOptionPane.ERROR_MESSAGE); 
 							break;
 						}
 						}
 					}
-					if(existe == false) {
+					if(existe) {
+						JOptionPane.showMessageDialog(getContentPane(),
+								    "Este usuario ya existe",
+								    "Error",
+								    JOptionPane.ERROR_MESSAGE); 
+					} else {
 						Usuario nuevo = new Usuario(usuarios.size(), nick, gmail, contraseña);
 						usuarios.add(nuevo);
 						gestor.insertarDatosUsuario(nuevo);

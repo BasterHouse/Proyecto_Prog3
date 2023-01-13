@@ -42,7 +42,7 @@ public class DeustoMusic {
 		protected static ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
 		protected static ArrayList<TreeMap<String, ArrayList<Multimedia>>> listaPlaylist = new ArrayList<TreeMap<String, ArrayList<Multimedia>>>();
 		protected static final String DRIVER_NAME = "org.sqlite.JDBC";
-		protected static final String DATABASE_FILE = "db/database.db";
+		protected static final String DATABASE_FILE = "db/databaseusuario.db";
 		protected static final String CONNECTION_STRING = "jdbc:sqlite:" + DATABASE_FILE;
 
 	public DeustoMusic(Multimedia multimedia, TreeMap<String, ArrayList<Multimedia>> playlist,
