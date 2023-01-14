@@ -7,25 +7,43 @@ import org.junit.Test;
 
 import clases.Cancion;
 import clases.Genero;
+import clases.Multimedia;
 
 public class TestCancion {
 	protected Genero genero = Genero.ACOUSTIC_POP;
-	protected Cancion cancion;	
+	protected Cancion cancion;
+	protected String nombre = "nombre";
+	protected String artista = "artista";
+	protected Integer duracion= 0;
+	protected Integer reproducciones= 2;
+	protected Integer  megusta = 3;
 
 	@Before
 	public void iniciar() {
-		cancion=new Cancion("nombre2", "artista2", 3, 5, 6, genero);
+		cancion=new Cancion();
+		cancion.setNombre(nombre);
+		cancion.setArtista(artista);
+		cancion.setDuracion(duracion);
+		cancion.setMegusta(megusta);
+		cancion.setReproducciones(reproducciones);
+		cancion.setGenero(genero);
 	}
 	@Test
 	public void testToString() {
-		String toString="Cancion [genero=" + genero + ", nombre=" + cancion.getNombre() + ", artista=" + cancion.getArtista() + ", duracion=" + cancion.getDuracion()
-				+ ", reproducciones=" + cancion.getReproducciones() + ", megusta=" + cancion.getMegusta() + "]";
+		String toString=nombre + " (" + artista + ")"; 
 		assertEquals(cancion.toString(),toString);
 	}
 
 	@Test
 	public void testCancionStringStringIntIntIntGenero() {
-		Cancion cancion2=new Cancion("nombre", "artista", 0, 0, 0, genero);
+		Cancion cancion2=new Cancion();
+		cancion2.setNombre(nombre);
+		cancion2.setArtista(artista);
+		cancion2.setDuracion(0);
+		cancion2.setMegusta(0);
+		cancion2.setReproducciones(0);
+		cancion2.setGenero(genero);
+		System.out.println(cancion2);
 		assertNotNull(cancion2);
 		assertEquals(cancion2.getNombre(), "nombre");
 		assertEquals(cancion2.getArtista(), "artista");

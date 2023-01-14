@@ -20,8 +20,7 @@ public class TestPodcast {
 
     @Test
     public void testToString() {
-        String toString= "Podcast [tema=" + tema + ", nombre=" + podcast.getNombre() + ", artista=" + podcast.getArtista() + ", duracion=" + podcast.getDuracion()
-                + ", reproducciones=" + podcast.getReproducciones() + ", megusta=" + podcast.getMegusta() + "]";
+        String toString= podcast.getNombre() + " (" + podcast.getArtista() + ")";
         assertEquals(podcast.toString(),toString);
     }
 

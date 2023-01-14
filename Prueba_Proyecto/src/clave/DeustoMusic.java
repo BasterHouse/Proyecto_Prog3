@@ -37,34 +37,35 @@ public class DeustoMusic {
 
 		protected Multimedia multimedia;
 		protected static TreeMap<String, ArrayList<Multimedia>> listademedia = new TreeMap<String, ArrayList<Multimedia>>();
-		protected static TreeMap<String, ArrayList<Multimedia>> playlist = new TreeMap<String, ArrayList<Multimedia>>();
-		protected static TreeMap<Usuario, ArrayList<TreeMap<String, ArrayList<Multimedia>>>> listaporusuario = new TreeMap<Usuario, ArrayList<TreeMap<String, ArrayList<Multimedia>>>>();
-		protected static ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
-		protected static ArrayList<TreeMap<String, ArrayList<Multimedia>>> listaPlaylist = new ArrayList<TreeMap<String, ArrayList<Multimedia>>>();
-		protected static final String DRIVER_NAME = "org.sqlite.JDBC";
-		protected static final String DATABASE_FILE = "db/databaseusuario.db";
-		protected static final String CONNECTION_STRING = "jdbc:sqlite:" + DATABASE_FILE;
+		protected TreeMap<Integer, ArrayList<Multimedia>> favoritos = new TreeMap<Integer, ArrayList<Multimedia>>();
+		protected Usuario usuario;
 
-	public DeustoMusic(Multimedia multimedia, TreeMap<String, ArrayList<Multimedia>> playlist,
-				TreeMap<Usuario, ArrayList<TreeMap<String, ArrayList<Multimedia>>>> listaporusuario) {
+
+
+	public DeustoMusic(Multimedia multimedia, TreeMap<Integer, ArrayList<Multimedia>> favoritos, Usuario usuario) {
 			super();
 			this.multimedia = multimedia;
+			this.favoritos = favoritos;
+			this.usuario = usuario;
 		}
 
-
+	
 	public DeustoMusic() {
 		super();
-		this.multimedia = new Multimedia();
-		try {
-			//Cargar el diver SQLite
-			Class.forName(DRIVER_NAME);
-		} catch (ClassNotFoundException ex) {
-			System.err.println(String.format("* Error al cargar el driver de BBDD: %s", ex.getMessage()));
-			ex.printStackTrace();
-		}
+		this.multimedia = multimedia;
+		this.favoritos = favoritos;
+		this.usuario = usuario;
 	}
-	
-	
+
+	public TreeMap<Integer, ArrayList<Multimedia>> getFavoritos() {
+			return favoritos;
+		}
+
+
+		public void setFavoritos(TreeMap<Integer, ArrayList<Multimedia>> favoritos) {
+			this.favoritos = favoritos;
+		}
+
 
 	public Multimedia getMultimedia() {
 		return multimedia;
@@ -84,51 +85,18 @@ public class DeustoMusic {
 	public static void setListademedia(TreeMap<String, ArrayList<Multimedia>> listademedia) {
 		DeustoMusic.listademedia = listademedia;
 	}
-
-
-	public static TreeMap<String, ArrayList<Multimedia>> getPlaylist() {
-		return playlist;
+	
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
 
-	public static void setPlaylist(TreeMap<String, ArrayList<Multimedia>> playlist) {
-		DeustoMusic.playlist = playlist;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 
-	public static TreeMap<Usuario, ArrayList<TreeMap<String, ArrayList<Multimedia>>>> getListaporusuario() {
-		return listaporusuario;
-	}
-
-
-	public static void setListaporusuario(
-			TreeMap<Usuario, ArrayList<TreeMap<String, ArrayList<Multimedia>>>> listaporusuario) {
-		DeustoMusic.listaporusuario = listaporusuario;
-	}
-
-
-	public static ArrayList<Usuario> getUsuarios() {
-		return usuarios;
-	}
-
-
-	public static void setUsuarios(ArrayList<Usuario> usuarios) {
-		DeustoMusic.usuarios = usuarios;
-	}
-
-
-	public static ArrayList<TreeMap<String, ArrayList<Multimedia>>> getListaPlaylist() {
-		return listaPlaylist;
-	}
-
-
-	public static void setListaPlaylist(ArrayList<TreeMap<String, ArrayList<Multimedia>>> listaPlaylist) {
-		DeustoMusic.listaPlaylist = listaPlaylist;
-	}
-
-
-
-		//Cargar el contenido multimedia de la base de datos en el programa
+	//Cargar el contenido multimedia de la base de datos en el programa
 	public static TreeMap<String, ArrayList<Multimedia>> inicializar() {
 		ArrayList<Multimedia> multimedias = new ArrayList<>();
 		try (BufferedReader in = new BufferedReader(new FileReader("top10ss.csv"))){
@@ -189,10 +157,7 @@ public class DeustoMusic {
 				}
 				
 			}
-			
-			
-			//System.out.println(listademedia);
-			//System.out.println(multimedias);
+
 			
 		}catch (Exception ex) {
 			System.err.println("Error en el main: " +ex);
@@ -200,38 +165,7 @@ public class DeustoMusic {
 		}
 		return listademedia;
 	}
-	
-	public TreeMap<String, ArrayList<Multimedia>> llenarPlaylist() {
-		String titulo;
-		Multimedia relleno;
-		//El titulo y las canciones tendremos que añadirlas desde la ventana, esto es una comprobación
-		for (int i = 0; i < 3; i++) {
-			titulo = "Lista" + i;
-			playlist.put(titulo, new ArrayList<Multimedia>());
-			for (int j = 0; j < 3; j++) {
-				relleno = listademedia.get("Canciones").get( (int) (Math.random()*25+1));
-			playlist.get(titulo).add(relleno);
-			}
-			listaPlaylist.add(playlist);
-		}
-		
-		
-		return playlist;
-	}
-		
-	
-	
-	
-	public void usuarioPlaylist( ) {
-		for (Usuario usuario : usuarios) {
-				listaporusuario.put(usuario, new ArrayList<TreeMap<String, ArrayList<Multimedia>>>());
-				for (TreeMap<String, ArrayList<Multimedia>> playlist : listaPlaylist) {
-					listaporusuario.get(usuario).add(playlist);
-				}
-		};
-		
-			
-	}
+
 	
 }
 

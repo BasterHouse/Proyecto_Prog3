@@ -3,6 +3,7 @@ package clases;
 public class Cancion extends Multimedia{
 	protected Genero genero;
 
+
 	public Cancion(String nombre, String artista, int duracion, int reproducciones, int megusta, Genero genero) {
 		super(nombre, artista, duracion, reproducciones, megusta);
 		this.genero = genero;

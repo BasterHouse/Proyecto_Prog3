@@ -117,8 +117,8 @@ public class TestMultimedia {
 
 	@Test
 	public void testToString() {
-		String toString="[Titulo= " + nombre + ", artista=" + artista + ", duracion=" + duracion + ", reproducciones="
-					+ reproducciones + ", megusta=" + megusta + "]";	
+		String toString="Multimedia [nombre=" + nombre + ", artista=" + artista + ", duracion=" + duracion + ", reproducciones="
+				+ reproducciones + ", megusta=" + megusta + "]";	
 		assertEquals(multimedia.toString(),toString);
 		}
 }

@@ -6,7 +6,8 @@ public class Multimedia {
 	protected int duracion;
 	protected int reproducciones;
 	protected int megusta;
-	private int id = -1;
+
+	
 	public Multimedia(String nombre, String artista, int duracion, int reproducciones, int megusta) {
 		super();
 		this.nombre = nombre;
@@ -14,6 +15,7 @@ public class Multimedia {
 		this.duracion = duracion;
 		this.reproducciones = reproducciones;
 		this.megusta = megusta;
+
 	}
 	public Multimedia() {
 		super();
@@ -22,14 +24,9 @@ public class Multimedia {
 		this.duracion = 0;
 		this.reproducciones = 0;
 		this.megusta = 0;
+
 	}
-	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
+
 	public String getNombre() {
 		return nombre;
 	}

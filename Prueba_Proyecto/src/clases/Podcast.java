@@ -6,11 +6,12 @@ public class Podcast extends Multimedia{
 		
 
 
+
 	public Podcast(String nombre, String artista, int duracion, int reproducciones, int megusta, Tema tema) {
 		super(nombre, artista, duracion, reproducciones, megusta);
 		this.tema = tema;
 	}
-	
+
 	public Podcast() {
 		super();
 		this.tema = Tema.ACTUALIDAD;
