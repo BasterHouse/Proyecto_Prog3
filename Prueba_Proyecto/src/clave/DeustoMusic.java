@@ -22,6 +22,7 @@ import java.util.TreeMap;
 import java.util.stream.Stream;
 
 import clases.Cancion;
+import clases.Favorito;
 import clases.Genero;
 import clases.Multimedia;
 import clases.Podcast;
@@ -37,32 +38,46 @@ public class DeustoMusic {
 
 		protected Multimedia multimedia;
 		protected static TreeMap<String, ArrayList<Multimedia>> listademedia = new TreeMap<String, ArrayList<Multimedia>>();
-		protected TreeMap<Integer, ArrayList<Multimedia>> favoritos = new TreeMap<Integer, ArrayList<Multimedia>>();
+		protected TreeMap<Usuario, ArrayList<Multimedia>> favoritos = new TreeMap<Usuario, ArrayList<Multimedia>>();
+		protected List<Favorito> listaFav = new ArrayList<Favorito>();
 		protected Usuario usuario;
 
 
 
-	public DeustoMusic(Multimedia multimedia, TreeMap<Integer, ArrayList<Multimedia>> favoritos, Usuario usuario) {
+	
+
+	public DeustoMusic(Multimedia multimedia, TreeMap<Usuario, ArrayList<Multimedia>> favoritos,
+				List<Favorito> listaFav, Usuario usuario) {
 			super();
 			this.multimedia = multimedia;
 			this.favoritos = favoritos;
+			this.listaFav = listaFav;
 			this.usuario = usuario;
 		}
-
 	
 	public DeustoMusic() {
 		super();
 		this.multimedia = multimedia;
 		this.favoritos = favoritos;
+		this.listaFav = listaFav;
 		this.usuario = usuario;
 	}
 
-	public TreeMap<Integer, ArrayList<Multimedia>> getFavoritos() {
+
+	public List<Favorito> getListaFav() {
+		return listaFav;
+	}
+
+	public void setListaFav(List<Favorito> listaFav) {
+		this.listaFav = listaFav;
+	}
+
+	public TreeMap<Usuario, ArrayList<Multimedia>> getFavoritos() {
 			return favoritos;
 		}
 
 
-		public void setFavoritos(TreeMap<Integer, ArrayList<Multimedia>> favoritos) {
+		public void setFavoritos(TreeMap<Usuario, ArrayList<Multimedia>> favoritos) {
 			this.favoritos = favoritos;
 		}
 

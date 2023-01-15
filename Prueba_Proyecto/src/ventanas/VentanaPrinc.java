@@ -45,7 +45,7 @@ public class VentanaPrinc extends JFrame{
 	List<Podcast> podcasts = new ArrayList<Podcast>();
 	List<Usuario> usuarios = new ArrayList<Usuario>();
 	List<Favorito> favoritos = new ArrayList<Favorito>();
-	TreeMap<Integer, ArrayList<Multimedia>> mapaFav = new TreeMap<>();
+	TreeMap<Usuario, ArrayList<Multimedia>> mapaFav = new TreeMap<>();
 	
 	
 	TreeMap<String, ArrayList<Multimedia>> listademedia = deustomusic.inicializar();
@@ -100,34 +100,12 @@ public class VentanaPrinc extends JFrame{
 			gestor.insertarDatosPodcast(podcasts.toArray(new Podcast[podcasts.size()]));
 		}
 		
-		favoritos = gestor.obtenerDatosFavoritos();
 
-		System.out.println(usuarios);
 		//gestor.borrarDatosCancion();
 		//gestor.borrarDatosUsuario();
 		//gestor.borrarDatosPodcast();
+		//gestor.borrarDatosFav();
 		//gestor.borrarBBDDUsuario();
-		
-		//favoritos.add(new Favorito(1, "Hey, Soul Sister", null));
-		//favoritos.add(new Favorito(1, "Love The Way You Lie", null));
-		
-		for (Favorito f : favoritos) {
-			mapaFav.putIfAbsent(f.getIdUsuario(), new ArrayList<Multimedia>());
-			for (Cancion cancion : canciones) {
-				if(cancion.getNombre().equals(f.getNombreCancion())) {
-					mapaFav.get(f.getIdUsuario()).add(cancion);
-				}
-			}
-		}
-		
-		System.out.println(mapaFav);
-		
-		deustomusic.setFavoritos(mapaFav);
-		
-		
-		
-		
-		
 		
 		
 		
@@ -226,9 +204,9 @@ public class VentanaPrinc extends JFrame{
 						    "Error",
 						    JOptionPane.ERROR_MESSAGE); 
 				}else {
-					Usuario nuevo = new Usuario(usuarios.size(), nick, gmail, contraseña);
+					Usuario nuevo = new Usuario(nick, gmail, contraseña, 0);
 					for (Usuario u : usuarios) {
-						if (nuevo.compareTo(u)== 0) {
+						if (u.getNick().equals(nuevo.getNick()) && u.getGmail().equals(nuevo.getGmail()) && u.getContraseña().equals(nuevo.getContraseña())) {
 							existe = true;	
 							break;
 						} else  {
@@ -236,9 +214,18 @@ public class VentanaPrinc extends JFrame{
 						}
 					}
 					if (existe) {
-						deustomusic.setUsuario(nuevo);
+						usuarios= gestor.obtenerDatosUsuario();
+						for (Usuario u : usuarios) {
+							if(u.getNick().equals(nuevo.getNick()) && u.getGmail().equals(nuevo.getGmail())) {
+								deustomusic.setUsuario(u);
+							}
+						}
+						favoritos.clear();
+						mapaFav.clear();
+						insertaFav();						
 						VentanaDeustomusic ventanamusic = new VentanaDeustomusic(deustomusic);
 						ventanamusic.setVisible(true);
+					
 					} else {
 						JOptionPane.showMessageDialog(getContentPane(),
 							    "Este usuario no existe.",
@@ -278,9 +265,15 @@ public class VentanaPrinc extends JFrame{
 								    "Error",
 								    JOptionPane.ERROR_MESSAGE); 
 					} else {
-						Usuario nuevo = new Usuario(usuarios.size(), nick, gmail, contraseña);
+						Usuario nuevo = new Usuario(nick, gmail, contraseña, 0);
 						usuarios.add(nuevo);
-						gestor.insertarDatosUsuario(nuevo);
+						gestor.insertarDatosUsuario(usuarios.toArray(new Usuario[usuarios.size()]));
+						usuarios= gestor.obtenerDatosUsuario();
+						for (Usuario u : usuarios) {
+							if(u.getNick().equals(nuevo.getNick()) && u.getGmail().equals(nuevo.getGmail())) {
+								deustomusic.setUsuario(u);
+							}
+						}
 						VentanaDeustomusic ventanamusic = new VentanaDeustomusic(deustomusic);
 						ventanamusic.setVisible(true);
 					}
@@ -332,5 +325,20 @@ public class VentanaPrinc extends JFrame{
 	public static void main(String[] args) {
 		VentanaPrinc v = new VentanaPrinc();
 		v.setVisible(true);
+	}
+	
+	public void insertaFav() {
+		favoritos = gestor.obtenerDatosFavoritos();
+		for (Favorito f : favoritos) {
+			mapaFav.putIfAbsent(f.getUsuario(), new ArrayList<Multimedia>());
+			for (Cancion cancion : canciones) {
+				if(cancion.getNombre().equals(f.getNombreCancion())) {
+					mapaFav.get(f.getUsuario()).add(cancion);
+				}
+			}
+		}
+		System.out.println(favoritos);
+		deustomusic.setListaFav(favoritos);
+		deustomusic.setFavoritos(mapaFav);
 	}
 }

@@ -20,28 +20,7 @@ public class GestorBBDD {
 	protected static final String DRIVER_NAME = "org.sqlite.JDBC";
 	protected static final String DATABASE_FILE = "db/database.db";
 	protected static final String CONNECTION_STRING = "jdbc:sqlite:" + DATABASE_FILE;
-	
-	/*public void crearBBDDUsuario() {
-		//Se abre la conexión y se obtiene el Statement
-		//Al abrir la conexión, si no existía el fichero, se crea la base de datos
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING_USUARIO);
-		     Statement stmt = con.createStatement()) {
-			
-	        String sql = "CREATE TABLE IF NOT EXISTS USUARIO (\n"
-	        		   + " ID INTEGER PRIMARY KEY AUTOINCREMENT,\n"
-	                   + " NICK TEXT NOT NULL,\n"
-	                   + " GMAIL TEXT NOT NULL,\n"
-	                   + " CONTRASEÑA TEXT NOT NULL \n"
-	                   + ");";
-	        	        
-	        if (!stmt.execute(sql)) {
-	        	System.out.println("- Se ha creado la tabla Usuario");
-	        }
-		} catch (Exception ex) {
-			System.err.println(String.format("* Error al crear la BBDD: %s", ex.getMessage()));
-			ex.printStackTrace();			
-		}
-	}*/
+	ArrayList<Usuario> usuarios = new ArrayList<>();
 	
 	
 	
@@ -77,14 +56,14 @@ public class GestorBBDD {
 		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
 		     Statement stmt = con.createStatement()) {
 			//Se define la plantilla de la sentencia SQL
-			String sql = "INSERT INTO USUARIO (ID, NICK, GMAIL, CONTRASEÑA) VALUES ('%d', '%s', '%s', '%s');";
+			String sql = "INSERT INTO USUARIO (NICK, GMAIL, CONTRASEÑA) VALUES ('%s', '%s', '%s');";
 			
 			System.out.println("- Insertando usuario...");
 			
 			//Se recorren los multimedias y se insertan uno a uno
 			for (Usuario c : usuarios) {
 				
-					if (1 == stmt.executeUpdate(String.format(sql, c.getId(), c.getNick(), c.getGmail(), c.getContraseña()))) {					
+					if (1 == stmt.executeUpdate(String.format(sql, c.getNick(), c.getGmail(), c.getContraseña()))) {					
 					System.out.println(String.format(" - Usuario insertada: %s", c.toString()));
 					} else {
 					System.out.println(String.format(" - No se ha insertado la usuario: %s", c.toString()));
@@ -146,7 +125,30 @@ public class GestorBBDD {
 			
 		}
 	
-	
+	public void insertarDatosFav(Favorito... favoritos) {
+		//Se abre la conexión y se obtiene el Statement
+		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+		     Statement stmt = con.createStatement()) {
+			//Se define la plantilla de la sentencia SQL
+			String sql = "INSERT INTO FAVORITO (ID_U, NOMBRE_P, NOMBRE_C, NOMBRE_U, GMAIL_U) VALUES ('%d', '%s', '%s', '%s', '%s');";	
+			
+			System.out.println("- Insertando favorito...");
+			
+			//Se recorren los multimedias y se insertan uno a uno
+			for (Favorito c : favoritos) {
+					if (1 == stmt.executeUpdate(String.format(sql,c.getUsuario().getId() , c.getNombrePodcast(), c.getNombreCancion(), c.getUsuario().getNick(), c.getUsuario().getGmail()))) {					
+					System.out.println(String.format(" - Favorita insertada: %s", c.toString()));
+					} else {
+					System.out.println(String.format(" - No se ha insertado la favorita: %s", c.toString()));
+					}
+				}
+
+			} catch (SQLException ex) {
+				System.err.println(String.format("* Error al insertar datos de la BBDD: %s", ex.getMessage()));
+				ex.printStackTrace();	
+			}	
+			
+		}
 	
 	
 	
@@ -156,7 +158,7 @@ public class GestorBBDD {
 		
 		
 	public ArrayList<Usuario> obtenerDatosUsuario() {
-		ArrayList<Usuario> usuarios = new ArrayList<>();
+		
 		
 		//Se abre la conexión y se obtiene el Statement
 		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
@@ -286,10 +288,13 @@ public class GestorBBDD {
 			//Se recorre el ResultSet y se crean objetos Cliente
 			while (rs.next()) {
 				favorito = new Favorito();
-				
-				favorito.setIdUsuario(rs.getInt("ID_U"));
+				for (Usuario u : usuarios) {
+					if(rs.getInt("ID_U")==(u.getId())) {
+						favorito.setUsuario(u);
+					}
+				}
 				favorito.setNombreCancion(rs.getString("NOMBRE_C"));
-				favorito.setNombreCancion(rs.getString("NOMBRE_P"));
+				favorito.setNombrePodcast(rs.getString("NOMBRE_P"));
 				
 				
 				//Se inserta cada nuevo cliente en la lista de clientes
@@ -299,7 +304,7 @@ public class GestorBBDD {
 			//Se cierra el ResultSet
 			rs.close();
 			
-			System.out.println(String.format("- Se han recuperado %d podcasts...", favoritos.size()));			
+			System.out.println(String.format("- Se han recuperado %d canciones favoritas...", favoritos.size()));			
 		} catch (Exception ex) {
 			System.err.println(String.format("* Error al obtener datos de la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();						
@@ -358,7 +363,20 @@ public class GestorBBDD {
 			}		
 		}
 	
-	
+		public void borrarDatosFav() {
+			//Se abre la conexión y se obtiene el Statement
+			try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+			     Statement stmt = con.createStatement()) {
+				//Se ejecuta la sentencia de borrado de datos
+				String sql = "DELETE FROM FAVORITO;";			
+				int result = stmt.executeUpdate(sql);
+				
+				System.out.println(String.format("- Se han borrado %d favoritos", result));
+			} catch (Exception ex) {
+				System.err.println(String.format("* Error al borrar datos de la BBDD: %s", ex.getMessage()));
+				ex.printStackTrace();						
+			}		
+		}
 	
 	//--------------------------------------------------------------------------------------------------------------------------------------
 	
