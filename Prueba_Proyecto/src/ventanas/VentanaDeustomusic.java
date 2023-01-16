@@ -9,7 +9,9 @@ import clases.Multimedia;
 import clases.Podcast;
 
 import javax.swing.JLabel;
+import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -23,6 +25,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JList;
@@ -36,6 +40,7 @@ import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.JTextField;
 import java.awt.Color;
+import javax.swing.SwingConstants;
 
 public class VentanaDeustomusic extends JFrame{
 	protected DefaultListModel<Cancion> modeloCanciones;
@@ -48,13 +53,13 @@ public class VentanaDeustomusic extends JFrame{
 	protected JList<Multimedia> listaPlaylist;
 	protected DefaultListModel<Cancion> modeloFav;
 	protected JList<Cancion> listaFav;
-	private Thread hilo;
 	GestorBBDD gestor = new GestorBBDD();
 	
 	protected DefaultListModel<String> modeloArtistas;
 	protected JList<String> listaArtistas;
 
 	protected boolean cerrar = false;
+
 	
 	
 	public VentanaDeustomusic(DeustoMusic deustomusic) {
@@ -64,8 +69,17 @@ public class VentanaDeustomusic extends JFrame{
 		setLocationRelativeTo(null);
 		
 		getContentPane().setLayout(null);
-		
-		modeloCanciones = new DefaultListModel<Cancion>();
+         
+        System.out.println(deustomusic.getUsuario());
+        
+        JLabel foto = new JLabel();
+        getContentPane().add(foto);
+        ImageIcon imagen= (new ImageIcon("heart.png"));
+        foto.setIcon(imagen);
+        foto.setBounds(427, 45, 118, 107);
+        foto.setVisible(false);
+        
+        modeloCanciones = new DefaultListModel<Cancion>();
 		
 		for (Multimedia cancion : deustomusic.getListademedia().get("Canciones")) {
 			if (cancion instanceof Cancion) {
@@ -78,20 +92,64 @@ public class VentanaDeustomusic extends JFrame{
 		JScrollPane scrollCanciones = new JScrollPane(listaCanciones);
 		scrollCanciones.setBounds(317, 30, 346, 122);
 		getContentPane().add(scrollCanciones);
-		JLabel titulomultimedias = new JLabel("Todas las canciones🎵");
+		JLabel titulomultimedias = new JLabel("Todas las canciones🎵 (enter para indicar favorita)");
         scrollCanciones.setColumnHeaderView(titulomultimedias);
-         
-        System.out.println(deustomusic.getUsuario());
-        
-       listaCanciones.addKeyListener(new KeyAdapter() {
 
+        
+		
+		
+		
+       listaCanciones.addKeyListener(new KeyAdapter() {	
+		
+    	/*   Thread hiloFav = new Thread(new Runnable() {
+   			boolean pausa = false;
+   			int inc = 5;
+   			int tamano = 30;			
+   				@Override
+   				public void run() {
+   					if(foto.isVisible()) {
+   						pausa = false;
+   						int inc = 5;
+   						int tamano = 30;
+   					}
+   					while(!pausa) {
+   						tamano += inc;
+   						if(tamano > 150) {
+   							tamano = 150;
+   							inc = -5;
+   						} else if (tamano<30) {
+   							tamano = 30;
+   							inc = 5;
+   							pausa = true;
+   							foto.setVisible(false);
+   						}
+   						
+   						foto.setBounds(450, 45, tamano, tamano);
+   						try {
+   							Thread.sleep(30);
+   						} catch (InterruptedException e) {
+   							e.printStackTrace();
+   						}
+   					
+   				}
+   				}
+   			});
+   		hiloFav.start();   */
+    	   
 		@Override
 		public void keyReleased(KeyEvent e) {
+
 			if(e.getKeyCode()==10) {
 				deustomusic.getListaFav().clear();
 				deustomusic.getListaFav().add(new Favorito(deustomusic.getUsuario(), listaCanciones.getSelectedValue().getNombre(), null));
-				gestor.insertarDatosFav(deustomusic.getListaFav().toArray(new Favorito[deustomusic.getListaFav().size()]));
-				modeloFav.addElement(listaCanciones.getSelectedValue());
+				
+				if(modeloFav.contains(listaCanciones.getSelectedValue())) {
+					System.err.println("Esta cancion ya esta en tus favoritas");
+				} else {
+					gestor.insertarDatosFav(deustomusic.getListaFav().toArray(new Favorito[deustomusic.getListaFav().size()]));
+					modeloFav.addElement(listaCanciones.getSelectedValue());
+				}
+				foto.setVisible(true);
 			}
 		}
 
@@ -117,6 +175,7 @@ public class VentanaDeustomusic extends JFrame{
         
         
 		JLabel titulogeneral = new JLabel("DeustoMusic");
+		titulogeneral.setHorizontalAlignment(SwingConstants.CENTER);
 		titulogeneral.setFont(new Font("Stencil", Font.PLAIN, 16));
 		titulogeneral.setBounds(10, 10, 194, 56);
 		getContentPane().add(titulogeneral);
@@ -234,9 +293,15 @@ public class VentanaDeustomusic extends JFrame{
 		buscar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				scrollArtistas.setVisible(true);
-
-				
+				if(scrollArtistas.isVisible()) {
+					scrollArtistas.setVisible(false);
+				} else {
+					scrollArtistas.setVisible(true);
+				}
+				if(listaBuscado.isVisible()) {
+					listaBuscado.setVisible(false);
+					scrollCanciones.setVisible(true);
+				}
 			}
 		});
 		modeloBuscado = new DefaultListModel<Cancion>();
@@ -287,6 +352,8 @@ public class VentanaDeustomusic extends JFrame{
         getContentPane().add(scrollFav);
         JLabel titulofav = new JLabel("Tus canciones favoritas❤");
         scrollFav.setColumnHeaderView(titulofav);
+        
+       
 		
 
 		cerrarsesion.addActionListener(new ActionListener() {

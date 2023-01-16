@@ -53,7 +53,6 @@ public class VentanaPrinc extends JFrame{
 	
 
 	public VentanaPrinc() {
-	
 		usuarios = gestor.obtenerDatosUsuario();
 		canciones = gestor.obtenerDatosCancion();
 		if (canciones.size()==0) {
