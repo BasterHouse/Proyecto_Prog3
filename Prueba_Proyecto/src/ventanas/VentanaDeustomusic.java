@@ -5,6 +5,7 @@ import javax.swing.JScrollPane;
 
 import clases.Cancion;
 import clases.Favorito;
+import clases.Genero;
 import clases.Multimedia;
 import clases.Podcast;
 
@@ -28,6 +29,8 @@ import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -35,10 +38,14 @@ import javax.swing.JOptionPane;
 import clave.DeustoMusic;
 import clave.GestorBBDD;
 
+
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.JTextField;
+
+import static org.junit.Assert.assertFalse;
+
 import java.awt.Color;
 import javax.swing.SwingConstants;
 
@@ -75,9 +82,9 @@ public class VentanaDeustomusic extends JFrame{
         JLabel foto = new JLabel();
         getContentPane().add(foto);
         ImageIcon imagen= (new ImageIcon("heart.png"));
-        foto.setIcon(imagen);
-        foto.setBounds(427, 45, 118, 107);
-        foto.setVisible(false);
+      //  foto.setIcon(imagen);
+      //  foto.setBounds(427, 45, 118, 107);
+      //  foto.setVisible(false);
         
         modeloCanciones = new DefaultListModel<Cancion>();
 		
@@ -138,18 +145,26 @@ public class VentanaDeustomusic extends JFrame{
     	   
 		@Override
 		public void keyReleased(KeyEvent e) {
+			boolean repetido = true;
 
 			if(e.getKeyCode()==10) {
+				Favorito nuevo = new Favorito(deustomusic.getUsuario(), listaCanciones.getSelectedValue().getNombre(), null);
+				
+				for (Favorito fav : deustomusic.getListaFav()) {
+					if(fav.getNombreCancion().equals(nuevo.getNombreCancion()) && fav.getUsuario().getId() == nuevo.getUsuario().getId()) {
+						repetido = true;
+						System.err.println("Esta cancion ya esta en favoritas");
+						break;
+					}else {
+						repetido = false;
+					}
+				}
+				if (repetido == false) {
 				deustomusic.getListaFav().clear();
 				deustomusic.getListaFav().add(new Favorito(deustomusic.getUsuario(), listaCanciones.getSelectedValue().getNombre(), null));
-				
-				if(modeloFav.contains(listaCanciones.getSelectedValue())) {
-					System.err.println("Esta cancion ya esta en tus favoritas");
-				} else {
-					gestor.insertarDatosFav(deustomusic.getListaFav().toArray(new Favorito[deustomusic.getListaFav().size()]));
-					modeloFav.addElement(listaCanciones.getSelectedValue());
+				gestor.insertarDatosFav(deustomusic.getListaFav().toArray(new Favorito[deustomusic.getListaFav().size()]));
+				modeloFav.addElement(listaCanciones.getSelectedValue());
 				}
-				foto.setVisible(true);
 			}
 		}
 
@@ -360,7 +375,7 @@ public class VentanaDeustomusic extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				cierra();
+			//	cierra();
 			}
 		});
 
@@ -377,8 +392,54 @@ public class VentanaDeustomusic extends JFrame{
 	}
 	
 	
+	public class Recursividad {
+		 private static void combinacionesR(List<List<Cancion>> result, List<Cancion> elementos, int duracion, List<Cancion> temp) {
+		        if (duracion < 0) {
+		        	return; 
+		        	
+		        } else {
+		            for(Cancion f : elementos) {
+		        		for (Cancion cancion : temp) {
+		        			if (!temp.contains(f)) {
+		        				temp.add(f);
+				        		combinacionesR(result, elementos, duracion-f.getDuracion(), temp);
+				        		temp.remove(temp.size()-1);
+				        		result.add(new ArrayList<>(temp));
+							}
+							
+						}
+		        	}
+		        }
+		    }
+		    
+	
+	
+	public static List<List<Cancion>> combinaciones(List<Cancion> elementos, int duracion) {
+
+    	
+		List<List<Cancion>> result = new ArrayList<>();
+    	return result;
+    }
+	
+	
+	public static void main(String[] args) {
+    	List<Cancion> elementos = new ArrayList<>();
+    	elementos.add(new Cancion("nombre", "artista", 180, 5, 30, Genero.ACOUSTIC_POP));
+    	elementos.add(new Cancion("nombre111", "artista", 1400, 5, 30, Genero.ACOUSTIC_POP));
+    	elementos.add(new Cancion("nombre333", "artista", 100, 5, 30, Genero.ACOUSTIC_POP));
+    	int duracion = 1000;
+    	    	
+    	List<List<Cancion>> result = combinaciones(elementos, duracion);
+    	System.out.println(String.format("Combinaciones de menos de %.2f segundos", duracion));
+    	result.forEach(r -> System.out.println(r));
+	}
+
+	
+	
+	
 	
 	public void cierra() {
-		this.dispose();
+		dispose();
 	}
+}
 }
