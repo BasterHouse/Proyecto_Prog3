@@ -53,30 +53,7 @@ public class VentanaPrinc extends JFrame{
 	
 
 	public VentanaPrinc() {
-		
-		
-		
-		/*for (Multimedia cancion : listademedia.get("Canciones")) {
-			if (cancion instanceof Cancion) {
-				canciones.add((Cancion)cancion);
-			}
-		}
-		
-		for (Multimedia podcast : listademedia.get("Podcasts")) {
-			if (podcast instanceof Podcast) {
-				podcasts.add((Podcast)podcast);
-			}
-		}
-		
-		deustomusic.llenarPlaylist();
-		deustomusic.usuarioPlaylist();*/
-		
-		
-		//BASE DE DATOS DE LOS USUARIOS
-		//gestor.borrarBBDDUsuario();
-		//gestor.crearBBDDUsuario();
-		//gestor.insertarDatosUsuario(usuarios.toArray(new Usuario[usuarios.size()]));
-		//gestor.actualizarNombreUsuario(usuarios.get(0), "BorjaTeQueremos");
+	
 		usuarios = gestor.obtenerDatosUsuario();
 		canciones = gestor.obtenerDatosCancion();
 		if (canciones.size()==0) {
