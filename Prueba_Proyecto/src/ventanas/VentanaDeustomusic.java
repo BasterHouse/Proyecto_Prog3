@@ -319,6 +319,7 @@ public class VentanaDeustomusic extends JFrame{
 				}
 			}
 		});
+		Recursividad.recursividad();
 		modeloBuscado = new DefaultListModel<Cancion>();
 		listaBuscado = new JList(modeloBuscado);
 		listaBuscado.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -393,44 +394,54 @@ public class VentanaDeustomusic extends JFrame{
 	
 	
 	public class Recursividad {
-		 private static void combinacionesR(List<List<Cancion>> result, List<Cancion> elementos, int duracion, List<Cancion> temp) {
+		 private static void combinacionesR(List<List<Cancion>> result, List<Cancion> elementos, int duracion, int sobrantemax,  List<Cancion> temp) {
 		        if (duracion < 0) {
-		        	return; 
+		        	return ;
+		        }else if(duracion < sobrantemax && duracion >= 0){
+		        	temp.sort(null);
+		        	if(result.contains(temp)){
+		        		result.add(new ArrayList<>(temp));
+		        	}
+		        	
 		        	
 		        } else {
 		            for(Cancion f : elementos) {
-		        		for (Cancion cancion : temp) {
-		        			if (!temp.contains(f)) {
-		        				temp.add(f);
-				        		combinacionesR(result, elementos, duracion-f.getDuracion(), temp);
-				        		temp.remove(temp.size()-1);
-				        		result.add(new ArrayList<>(temp));
+		            	if (!temp.contains(f)) {
+		            		temp.add(f);
+			        		combinacionesR(result, elementos, duracion-f.getDuracion(),sobrantemax, temp);
+			        		temp.remove(temp.size()-1);
+			        	
+			        		
+							
 							}
 							
 						}
 		        	}
 		        }
-		    }
+		    
 		    
 	
 	
-	public static List<List<Cancion>> combinaciones(List<Cancion> elementos, int duracion) {
+	public static List<List<Cancion>> combinaciones(List<Cancion> elementos, int duracion, int sobrantemax) {
 
+		
     	
 		List<List<Cancion>> result = new ArrayList<>();
+		combinacionesR(result, elementos, duracion,sobrantemax, new ArrayList<>());
     	return result;
     }
 	
 	
-	public static void main(String[] args) {
+	public static void recursividad() {
     	List<Cancion> elementos = new ArrayList<>();
     	elementos.add(new Cancion("nombre", "artista", 180, 5, 30, Genero.ACOUSTIC_POP));
     	elementos.add(new Cancion("nombre111", "artista", 1400, 5, 30, Genero.ACOUSTIC_POP));
     	elementos.add(new Cancion("nombre333", "artista", 100, 5, 30, Genero.ACOUSTIC_POP));
-    	int duracion = 1000;
+    	int duracion = 280;
+    	int sobrantemax = 50;
     	    	
-    	List<List<Cancion>> result = combinaciones(elementos, duracion);
-    	System.out.println(String.format("Combinaciones de menos de %.2f segundos", duracion));
+    	List<List<Cancion>> result = combinaciones(elementos, duracion , sobrantemax);
+    	System.out.println(String.format("Combinaciones de menos de "+  duracion +" segundos"));
     	result.forEach(r -> System.out.println(r));
 	}
 
@@ -443,3 +454,4 @@ public class VentanaDeustomusic extends JFrame{
 	}
 }
 }
+
