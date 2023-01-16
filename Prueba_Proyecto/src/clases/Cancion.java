@@ -1,5 +1,9 @@
 package clases;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 public class Cancion extends Multimedia{
 	protected Genero genero;
 
@@ -28,6 +32,10 @@ public class Cancion extends Multimedia{
 	}
 
 
+
+
+
+		
 	
 	
 

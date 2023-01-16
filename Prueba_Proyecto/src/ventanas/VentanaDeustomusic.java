@@ -30,6 +30,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JList;
@@ -87,9 +88,12 @@ public class VentanaDeustomusic extends JFrame{
       //  foto.setVisible(false);
         
         modeloCanciones = new DefaultListModel<Cancion>();
-		
+	
+       List<Cancion> canciones = new ArrayList<Cancion>();
+        
 		for (Multimedia cancion : deustomusic.getListademedia().get("Canciones")) {
 			if (cancion instanceof Cancion) {
+				canciones.add((Cancion) cancion);
 				modeloCanciones.addElement((Cancion)cancion);
 			}
 		}
@@ -281,7 +285,7 @@ public class VentanaDeustomusic extends JFrame{
 		getContentPane().add(cerrarsesion);
 		
 		JButton informacion = new JButton("Información");
-		informacion.setBounds(10, 344, 143, 56);
+		informacion.setBounds(10, 366, 143, 56);
 		getContentPane().add(informacion);
 
 
@@ -369,6 +373,19 @@ public class VentanaDeustomusic extends JFrame{
         JLabel titulofav = new JLabel("Tus canciones favoritas❤");
         scrollFav.setColumnHeaderView(titulofav);
         
+        JButton btnNewButton = new JButton("Combinacionesºº");
+        btnNewButton.setBounds(37, 322, 85, 21);
+        getContentPane().add(btnNewButton);
+        
+        btnNewButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println(canciones);
+				Recursividad.combinaciones(canciones,1000, 500);
+			}
+		});
+
        
 		
 
@@ -395,11 +412,14 @@ public class VentanaDeustomusic extends JFrame{
 	
 	public class Recursividad {
 		 private static void combinacionesR(List<List<Cancion>> result, List<Cancion> elementos, int duracion, int sobrantemax,  List<Cancion> temp) {
-		        if (duracion < 0) {
+			 Comparator<Cancion> compDuracion = (s1, s2) -> {
+					return Integer.compare(s1.getDuracion(), s2.getDuracion());
+				};
+			 if (duracion < 0) {
 		        	return ;
-		        }else if(duracion < sobrantemax && duracion >= 0){
-		        	temp.sort(null);
-		        	if(result.contains(temp)){
+		        }else if (duracion < sobrantemax && duracion >= 0){
+					Collections.sort(temp, compDuracion);
+		        	if (!result.contains(temp)){
 		        		result.add(new ArrayList<>(temp));
 		        	}
 		        	
@@ -420,7 +440,8 @@ public class VentanaDeustomusic extends JFrame{
 		        }
 		    
 		    
-	
+
+
 	
 	public static List<List<Cancion>> combinaciones(List<Cancion> elementos, int duracion, int sobrantemax) {
 
