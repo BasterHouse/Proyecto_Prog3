@@ -1,4 +1,6 @@
 package clave;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -7,6 +9,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Properties;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import clases.Cancion;
 import clases.Favorito;
@@ -17,35 +24,60 @@ import clases.Tema;
 import clases.Usuario;
 
 public class GestorBBDD {
-	protected static final String DRIVER_NAME = "org.sqlite.JDBC";
-	protected static final String DATABASE_FILE = "db/database.db";
-	protected static final String CONNECTION_STRING = "jdbc:sqlite:" + DATABASE_FILE;
+	private final static String PROPERTIES_FILE = "conf/app.properties";
 	ArrayList<Usuario> usuarios = new ArrayList<>();
 	
+	protected Properties properties;
+	private String driverName;
+	private String databaseFile;
+	private String connectionString;
+	
+	
+	private static Logger logger = Logger.getLogger(GestorBBDD.class.getName());
+	
+	public GestorBBDD() {
+		try (FileInputStream fis = new FileInputStream("conf/logger.properties")) {
+			//Inicialización del Logger
+			LogManager.getLogManager().readConfiguration(fis);
+			
+			//Lectura del fichero properties
+			properties = new Properties();
+			properties.load(new FileReader(PROPERTIES_FILE));
+			
+			driverName = properties.getProperty("driver");
+			databaseFile = properties.getProperty("file");
+			connectionString = properties.getProperty("connection");
+			
+			//Cargar el diver SQLite
+			Class.forName(driverName);
+		} catch (Exception ex) {
+			logger.warning(String.format("Error al cargar el driver de BBDD: %s", ex.getMessage()));
+		}
+	}
 	
 	
 	public void borrarBBDDUsuario() {
 		//Se abre la conexión y se obtiene el Statement
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+		try (Connection con = DriverManager.getConnection(connectionString);
 		     Statement stmt = con.createStatement()) {
 			
 	        String sql = "DROP TABLE IF EXISTS USUARIO";
 			
 	        //Se ejecuta la sentencia de creación de la tabla Estudiantes
 	        if (!stmt.execute(sql)) {
-	        	System.out.println("- Se ha borrado la tabla Usuario");
+	        	logger.info("- Se ha borrado la tabla Usuario");
 	        }
 		} catch (Exception ex) {
-			System.err.println(String.format("* Error al borrar la BBDD: %s", ex.getMessage()));
+			logger.warning(String.format("* Error al borrar la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();			
 		}
 		
 		try {
 			//Se borra el fichero de la BBDD
-			Files.delete(Paths.get(DATABASE_FILE));
-			System.out.println("- Se ha borrado el fichero de la BBDD");
+			Files.delete(Paths.get(databaseFile));
+			logger.info("- Se ha borrado el fichero de la BBDD");
 		} catch (Exception ex) {
-			System.err.println(String.format("* Error al borrar el archivo de la BBDD: %s", ex.getMessage()));
+			logger.warning(String.format("* Error al borrar el archivo de la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();						
 		}
 	}
@@ -53,24 +85,24 @@ public class GestorBBDD {
 	
 	public void insertarDatosUsuario(Usuario...usuarios) {
 		//Se abre la conexión y se obtiene el Statement
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+		try (Connection con = DriverManager.getConnection(connectionString);
 		     Statement stmt = con.createStatement()) {
 			//Se define la plantilla de la sentencia SQL
 			String sql = "INSERT INTO USUARIO (NICK, GMAIL, CONTRASEÑA) VALUES ('%s', '%s', '%s');";
 			
-			System.out.println("- Insertando usuario...");
+			logger.info("- Insertando usuario...");
 			
 			//Se recorren los multimedias y se insertan uno a uno
 			for (Usuario c : usuarios) {
 				
 					if (1 == stmt.executeUpdate(String.format(sql, c.getNick(), c.getGmail(), c.getContraseña()))) {					
-					System.out.println(String.format(" - Usuario insertada: %s", c.toString()));
+					logger.info(" - Usuario insertada: %s");
 					} else {
-					System.out.println(String.format(" - No se ha insertado la usuario: %s", c.toString()));
+					logger.info(" - No se ha insertado la usuario: %s");
 					}
 				}
 			} catch (SQLException ex) {
-				System.err.println(String.format("* Error al insertar datos de la BBDD: %s", ex.getMessage()));
+				logger.warning(String.format("* Error al insertar datos de la BBDD: %s", ex.getMessage()));
 				ex.printStackTrace();	
 			}	
 			
@@ -78,23 +110,23 @@ public class GestorBBDD {
 	
 	public void insertarDatosCancion(Cancion...canciones) {
 		//Se abre la conexión y se obtiene el Statement
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+		try (Connection con = DriverManager.getConnection(connectionString);
 		     Statement stmt = con.createStatement()) {
 			//Se define la plantilla de la sentencia SQL
 			String sql = "INSERT INTO CANCION (NOMBRE_C, ARTISTA_C, GENERO, DURACION_C, REPRODUCCIONES_C, MEGUSTAS_C) VALUES ('%s', '%s', '%s', '%s', '%d', '%d');";
 			
-			System.out.println("- Insertando cancion...");
+			logger.info("- Insertando cancion...");
 			
 			//Se recorren los multimedias y se insertan uno a uno
 			for (Cancion c : canciones) {
 					if (1 == stmt.executeUpdate(String.format(sql, c.getNombre(), c.getArtista(), c.getGenero(), c.getDuracion(), c.getReproducciones(), c.getMegusta()))) {					
-					System.out.println(String.format(" - Cancion insertada: %s", c.toString()));
+					logger.info(" - Cancion insertada: %s");
 					} else {
-					System.out.println(String.format(" - No se ha insertado la cancion: %s", c.toString()));
+					logger.info(" - No se ha insertado la cancion: %s");
 					}
 				}
 			} catch (SQLException ex) {
-				System.err.println(String.format("* Error al insertar datos de la BBDD: %s", ex.getMessage()));
+				logger.warning(String.format("* Error al insertar datos de la BBDD: %s", ex.getMessage()));
 				ex.printStackTrace();	
 			}	
 			
@@ -103,23 +135,23 @@ public class GestorBBDD {
 	
 	public void insertarDatosPodcast(Podcast...podcasts) {
 		//Se abre la conexión y se obtiene el Statement
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+		try (Connection con = DriverManager.getConnection(connectionString);
 		     Statement stmt = con.createStatement()) {
 			//Se define la plantilla de la sentencia SQL
 			String sql = "INSERT INTO PODCAST (NOMBRE_P, ARTISTA_P, TEMA, DURACION_P, REPRODUCCIONES_P, MEGUSTAS_P) VALUES ('%s', '%s', '%s', '%d', '%d', '%d');";	
 			
-			System.out.println("- Insertando podcast...");
+			logger.info("- Insertando podcast...");
 			
 			//Se recorren los multimedias y se insertan uno a uno
 			for (Podcast c : podcasts) {
 					if (1 == stmt.executeUpdate(String.format(sql, c.getNombre(), c.getArtista(), c.getTema(), c.getDuracion(), c.getReproducciones(), c.getMegusta()))) {					
-					System.out.println(String.format(" - Podcast insertado: %s", c.toString()));
+					logger.info(" - Podcast insertado: %s");
 					} else {
-					System.out.println(String.format(" - No se ha insertado la podcast: %s", c.toString()));
+					logger.info(" - No se ha insertado la podcast: %s");
 					}
 				}
 			} catch (SQLException ex) {
-				System.err.println(String.format("* Error al insertar datos de la BBDD: %s", ex.getMessage()));
+				logger.warning(String.format("* Error al insertar datos de la BBDD: %s", ex.getMessage()));
 				ex.printStackTrace();	
 			}	
 			
@@ -127,24 +159,24 @@ public class GestorBBDD {
 	
 	public void insertarDatosFav(Favorito... favoritos) {
 		//Se abre la conexión y se obtiene el Statement
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+		try (Connection con = DriverManager.getConnection(connectionString);
 		     Statement stmt = con.createStatement()) {
 			//Se define la plantilla de la sentencia SQL
 			String sql = "INSERT INTO FAVORITO (ID_U, NOMBRE_P, NOMBRE_C, NOMBRE_U, GMAIL_U) VALUES ('%d', '%s', '%s', '%s', '%s');";	
 			
-			System.out.println("- Insertando favorito...");
+			logger.info("Cancion favorita insertada");
 			
 			//Se recorren los multimedias y se insertan uno a uno
 			for (Favorito c : favoritos) {
 					if (1 == stmt.executeUpdate(String.format(sql,c.getUsuario().getId() , c.getNombrePodcast(), c.getNombreCancion(), c.getUsuario().getNick(), c.getUsuario().getGmail()))) {					
-					System.out.println(String.format(" - Favorita insertada: %s", c.toString()));
+					logger.info(" - Favorita insertada: %s");
 					} else {
-					System.out.println(String.format(" - No se ha insertado la favorita: %s", c.toString()));
+					logger.info(" - No se ha insertado la favorita: %s");
 					}
 				}
 
 			} catch (SQLException ex) {
-				System.err.println(String.format("* Error al insertar datos de la BBDD: %s", ex.getMessage()));
+				logger.warning(String.format("* Error al insertar datos de la BBDD: %s", ex.getMessage()));
 				ex.printStackTrace();	
 			}	
 			
@@ -161,7 +193,7 @@ public class GestorBBDD {
 		
 		
 		//Se abre la conexión y se obtiene el Statement
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+		try (Connection con = DriverManager.getConnection(connectionString);
 		     Statement stmt = con.createStatement()) {
 			String sql = "SELECT * FROM USUARIO WHERE ID >= 0";			
 			//Se ejecuta la sentencia y se obtiene el ResultSet con los resutlados
@@ -180,10 +212,12 @@ public class GestorBBDD {
 			}	
 			//Se cierra el ResultSet
 			rs.close();
-			System.out.println(String.format("- Se han recuperado %d usuarios...", usuarios.size()));	
+			logger.info("- Se han recuperado %d usuarios...");
+
+	
 			
 		} catch (Exception ex) {
-			System.err.println(String.format("* Error al obtener datos de la BBDD: %s", ex.getMessage()));
+			logger.warning(String.format("* Error al obtener datos de la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();						
 		}		
 		return usuarios;
@@ -196,7 +230,7 @@ public class GestorBBDD {
 		ArrayList<Cancion> canciones = new ArrayList<>();
 		
 		//Se abre la conexión y se obtiene el Statement
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+		try (Connection con = DriverManager.getConnection(connectionString);
 			Statement stmt = con.createStatement()) {
 			String sql = "SELECT * FROM CANCION WHERE ID_C >= 0";
 			
@@ -221,9 +255,9 @@ public class GestorBBDD {
 			//Se cierra el ResultSet
 			rs.close();
 			
-			System.out.println(String.format("- Se han recuperado %d canciones...", canciones.size()));			
+			logger.info("- Se han recuperado %d canciones...");			
 		} catch (Exception ex) {
-			System.err.println(String.format("* Error al obtener datos de la BBDD: %s", ex.getMessage()));
+			logger.warning(String.format("* Error al obtener datos de la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();						
 		}		
 		
@@ -237,7 +271,7 @@ public class GestorBBDD {
 		ArrayList<Podcast> podcasts = new ArrayList<>();
 		
 		//Se abre la conexión y se obtiene el Statement
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+		try (Connection con = DriverManager.getConnection(connectionString);
 			     Statement stmt = con.createStatement()) {
 			String sql = "SELECT * FROM PODCAST WHERE ID_P >= 0";
 			
@@ -264,9 +298,9 @@ public class GestorBBDD {
 			//Se cierra el ResultSet
 			rs.close();
 			
-			System.out.println(String.format("- Se han recuperado %d podcasts...", podcasts.size()));			
+			logger.info("- Se han recuperado %d podcasts...");			
 		} catch (Exception ex) {
-			System.err.println(String.format("* Error al obtener datos de la BBDD: %s", ex.getMessage()));
+			logger.warning(String.format("* Error al obtener datos de la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();						
 		}		
 		
@@ -277,7 +311,7 @@ public class GestorBBDD {
 		ArrayList<Favorito> favoritos = new ArrayList<>();
 		
 		//Se abre la conexión y se obtiene el Statement
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+		try (Connection con = DriverManager.getConnection(connectionString);
 			     Statement stmt = con.createStatement()) {
 			String sql = "SELECT * FROM FAVORITO WHERE ID_U >= 0";
 			
@@ -304,9 +338,9 @@ public class GestorBBDD {
 			//Se cierra el ResultSet
 			rs.close();
 			
-			System.out.println(String.format("- Se han recuperado %d canciones favoritas...", favoritos.size()));			
+			logger.info("- Se han recuperado %d canciones favoritas...");			
 		} catch (Exception ex) {
-			System.err.println(String.format("* Error al obtener datos de la BBDD: %s", ex.getMessage()));
+			logger.warning(String.format("* Error al obtener datos de la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();						
 		}		
 		
@@ -320,60 +354,60 @@ public class GestorBBDD {
 	
 	public void borrarDatosUsuario() {
 		//Se abre la conexión y se obtiene el Statement
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+		try (Connection con = DriverManager.getConnection(connectionString);
 		     Statement stmt = con.createStatement()) {
 			//Se ejecuta la sentencia de borrado de datos
 			String sql = "DELETE FROM USUARIO;";			
 			int result = stmt.executeUpdate(sql);
 			
-			System.out.println(String.format("- Se han borrado %d usuarios", result));
+			logger.info("- Se han borrado %d usuarios");
 		} catch (Exception ex) {
-			System.err.println(String.format("* Error al borrar datos de la BBDD: %s", ex.getMessage()));
+			logger.warning(String.format("* Error al borrar datos de la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();						
 		}		
 	}
 		
 		public void borrarDatosCancion() {
 			//Se abre la conexión y se obtiene el Statement
-			try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+			try (Connection con = DriverManager.getConnection(connectionString);
 			     Statement stmt = con.createStatement()) {
 				//Se ejecuta la sentencia de borrado de datos
 				String sql = "DELETE FROM CANCION;";			
 				int result = stmt.executeUpdate(sql);
 				
-				System.out.println(String.format("- Se han borrado %d canciones", result));
+				logger.info("- Se han borrado %d canciones");
 			} catch (Exception ex) {
-				System.err.println(String.format("* Error al borrar datos de la BBDD: %s", ex.getMessage()));
+				logger.warning(String.format("* Error al borrar datos de la BBDD: %s", ex.getMessage()));
 				ex.printStackTrace();						
 			}		
 		}	
 		
 		public void borrarDatosPodcast() {
 			//Se abre la conexión y se obtiene el Statement
-			try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+			try (Connection con = DriverManager.getConnection(connectionString);
 			     Statement stmt = con.createStatement()) {
 				//Se ejecuta la sentencia de borrado de datos
 				String sql = "DELETE FROM PODCAST;";			
 				int result = stmt.executeUpdate(sql);
 				
-				System.out.println(String.format("- Se han borrado %d podcasts", result));
+				logger.info("- Se han borrado %d podcasts");
 			} catch (Exception ex) {
-				System.err.println(String.format("* Error al borrar datos de la BBDD: %s", ex.getMessage()));
+				logger.warning(String.format("* Error al borrar datos de la BBDD: %s", ex.getMessage()));
 				ex.printStackTrace();						
 			}		
 		}
 	
 		public void borrarDatosFav() {
 			//Se abre la conexión y se obtiene el Statement
-			try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+			try (Connection con = DriverManager.getConnection(connectionString);
 			     Statement stmt = con.createStatement()) {
 				//Se ejecuta la sentencia de borrado de datos
 				String sql = "DELETE FROM FAVORITO;";			
 				int result = stmt.executeUpdate(sql);
 				
-				System.out.println(String.format("- Se han borrado %d favoritos", result));
+				logger.info( "- Se han borrado %d favoritos" );
 			} catch (Exception ex) {
-				System.err.println(String.format("* Error al borrar datos de la BBDD: %s", ex.getMessage()));
+				logger.warning(String.format("* Error al borrar datos de la BBDD: %s", ex.getMessage()));
 				ex.printStackTrace();						
 			}		
 		}
@@ -401,7 +435,7 @@ public class GestorBBDD {
 	        	System.out.println("- Se ha creado la tabla Cancion");
 	        }
 		} catch (Exception ex) {
-			System.err.println(String.format("* Error al crear la BBDD: %s", ex.getMessage()));
+			logger.warning(String.format("* Error al crear la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();			
 		}
 	}
@@ -418,7 +452,7 @@ public class GestorBBDD {
 	        	System.out.println("- Se ha borrado la tabla Cancion");
 	        }
 		} catch (Exception ex) {
-			System.err.println(String.format("* Error al borrar la BBDD: %s", ex.getMessage()));
+			logger.warning(String.format("* Error al borrar la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();			
 		}
 		
@@ -427,7 +461,7 @@ public class GestorBBDD {
 			Files.delete(Paths.get(DATABASE_FILE_CANCION));
 			System.out.println("- Se ha borrado el fichero de la BBDD");
 		} catch (Exception ex) {
-			System.err.println(String.format("* Error al borrar el archivo de la BBDD: %s", ex.getMessage()));
+			logger.warning(String.format("* Error al borrar el archivo de la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();						
 		}
 	}
@@ -453,7 +487,7 @@ public class GestorBBDD {
 			
 			System.out.println(String.format("- Se ha actulizado %d canciones", result));
 		} catch (Exception ex) {
-			System.err.println(String.format("* Error actualizando datos de la BBDD: %s", ex.getMessage()));
+			logger.warning(String.format("* Error actualizando datos de la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();						
 		}		
 	}
@@ -479,7 +513,7 @@ public class GestorBBDD {
 	        	System.out.println("- Se ha creado la tabla Podcast");
 	        }
 		} catch (Exception ex) {
-			System.err.println(String.format("* Error al crear la BBDD: %s", ex.getMessage()));
+			logger.warning(String.format("* Error al crear la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();			
 		}
 	}
@@ -496,7 +530,7 @@ public class GestorBBDD {
 	        	System.out.println("- Se ha borrado la tabla Podcast");
 	        }
 		} catch (Exception ex) {
-			System.err.println(String.format("* Error al borrar la BBDD: %s", ex.getMessage()));
+			logger.warning(String.format("* Error al borrar la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();			
 		}
 		
@@ -505,7 +539,7 @@ public class GestorBBDD {
 			Files.delete(Paths.get(DATABASE_FILE_PODCAST));
 			System.out.println("- Se ha borrado el fichero de la BBDD");
 		} catch (Exception ex) {
-			System.err.println(String.format("* Error al borrar el archivo de la BBDD: %s", ex.getMessage()));
+			logger.warning(String.format("* Error al borrar el archivo de la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();						
 		}
 	}
@@ -530,7 +564,7 @@ public class GestorBBDD {
 			
 			System.out.println(String.format("- Se ha actulizado %d podcasts", result));
 		} catch (Exception ex) {
-			System.err.println(String.format("* Error actualizando datos de la BBDD: %s", ex.getMessage()));
+			logger.warning(String.format("* Error actualizando datos de la BBDD: %s", ex.getMessage()));
 			ex.printStackTrace();						
 		}		
 	}*/
