@@ -69,7 +69,7 @@ public class VentanaDeustomusic extends JFrame{
 	protected DefaultListModel<List<Cancion>> modeloRec;
 	protected JList<List<Cancion>> listaRec;
 	GestorBBDD gestor = new GestorBBDD();
-	
+
 	protected DefaultListModel<String> modeloArtistas;
 	protected JList<String> listaArtistas;
 
@@ -407,7 +407,7 @@ public class VentanaDeustomusic extends JFrame{
         panel.add(horas);
         horas.setColumns(10);
         
-        JLabel titRecursivo = new JLabel("<html>Indica el tiempo que tienes en tu viaje y ve las posibles <br/> combinaciones  de tus canciones favoritas que puedes escuchar</html>");
+        JLabel titRecursivo = new JLabel("<html>Indica el tiempo que tienes en tu viaje y ve las posibles combinaciones  de tus canciones favoritas que puedes escuchar</html>");
         titRecursivo.setHorizontalAlignment(SwingConstants.CENTER);
         titRecursivo.setBackground(new Color(192, 192, 192));
         titRecursivo.setBounds(0, 0, 346, 55);
