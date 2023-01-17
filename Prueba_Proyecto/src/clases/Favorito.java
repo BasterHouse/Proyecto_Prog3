@@ -49,13 +49,5 @@ public class Favorito  {
 		return "Favorito [usuario=" + usuario + ", nombreCancion=" + nombreCancion + ", nombrePodcast=" + nombrePodcast
 				+ "]";
 	}
-//	@Override
-//	public int compareTo(Favorito o) {
-//		// TODO Auto-generated method stub
-//		if(this.getUsuario().getId()== o.getUsuario().getId()){
-//			return 0;
-//		}else {
-//		return 1;
-//		}
-//	}
+
 }

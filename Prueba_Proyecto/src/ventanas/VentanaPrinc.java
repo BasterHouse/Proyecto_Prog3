@@ -4,9 +4,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
+
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -46,6 +51,7 @@ public class VentanaPrinc extends JFrame{
 	List<Usuario> usuarios = new ArrayList<Usuario>();
 	List<Favorito> favoritos = new ArrayList<Favorito>();
 	TreeMap<Usuario, ArrayList<Multimedia>> mapaFav = new TreeMap<>();
+	static VentanaDeustomusic ventanamusic;
 	
 	
 	TreeMap<String, ArrayList<Multimedia>> listademedia = deustomusic.inicializar();
@@ -82,7 +88,6 @@ public class VentanaPrinc extends JFrame{
 		//gestor.borrarDatosPodcast();
 		//gestor.borrarDatosFav();
 		//gestor.borrarBBDDUsuario();
-		
 		
 		
 		setTitle("DeustoMusic");
@@ -142,7 +147,6 @@ public class VentanaPrinc extends JFrame{
 		tres.setVisible(false);
 		
 		
-		
 		iniciarsesion.addActionListener(new ActionListener() {
 			
 			@Override
@@ -199,7 +203,7 @@ public class VentanaPrinc extends JFrame{
 						favoritos.clear();
 						mapaFav.clear();
 						insertaFav();						
-						VentanaDeustomusic ventanamusic = new VentanaDeustomusic(deustomusic);
+						ventanamusic = new VentanaDeustomusic(deustomusic);
 						ventanamusic.setVisible(true);
 					
 					} else {
@@ -250,7 +254,7 @@ public class VentanaPrinc extends JFrame{
 								deustomusic.setUsuario(u);
 							}
 						}
-						VentanaDeustomusic ventanamusic = new VentanaDeustomusic(deustomusic);
+						ventanamusic = new VentanaDeustomusic(deustomusic);
 						ventanamusic.setVisible(true);
 					}
 				}
@@ -313,7 +317,6 @@ public class VentanaPrinc extends JFrame{
 				}
 			}
 		}
-		System.out.println(favoritos);
 		deustomusic.setListaFav(favoritos);
 		deustomusic.setFavoritos(mapaFav);
 	}

@@ -59,7 +59,7 @@ public class Usuario implements Comparable<Usuario>{
 
 	@Override
 	public String toString() {
-		return "Usuario [nick=" + nick + ", gmail=" + gmail + ", contraseña=" + contraseña + id +"]";
+		return "Usuario [nick=" + nick + ", gmail=" + gmail + ", contraseña=" + contraseña + "]";
 	}
 
 

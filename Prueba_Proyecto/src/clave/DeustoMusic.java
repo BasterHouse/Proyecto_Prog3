@@ -30,10 +30,6 @@ import clases.Tema;
 import clases.Usuario;
 
 
-//Algunas de las funciones han tenido que ser static por el momento, 
-//cuando añadamos las ventanas se harán algunos cambios, por eso dejamos los warnings
-
-
 public class DeustoMusic {
 
 		protected Multimedia multimedia;

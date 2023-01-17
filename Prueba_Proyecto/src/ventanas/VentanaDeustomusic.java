@@ -49,6 +49,11 @@ import static org.junit.Assert.assertFalse;
 
 import java.awt.Color;
 import javax.swing.SwingConstants;
+import javax.swing.JSlider;
+import javax.swing.JPanel;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.BorderLayout;
 
 public class VentanaDeustomusic extends JFrame{
 	protected DefaultListModel<Cancion> modeloCanciones;
@@ -61,12 +66,17 @@ public class VentanaDeustomusic extends JFrame{
 	protected JList<Multimedia> listaPlaylist;
 	protected DefaultListModel<Cancion> modeloFav;
 	protected JList<Cancion> listaFav;
+	protected DefaultListModel<List<Cancion>> modeloRec;
+	protected JList<List<Cancion>> listaRec;
 	GestorBBDD gestor = new GestorBBDD();
 	
 	protected DefaultListModel<String> modeloArtistas;
 	protected JList<String> listaArtistas;
 
 	protected boolean cerrar = false;
+	private JTextField minutos;
+	private JTextField segundos;
+	private JTextField horas;
 
 	
 	
@@ -77,15 +87,13 @@ public class VentanaDeustomusic extends JFrame{
 		setLocationRelativeTo(null);
 		
 		getContentPane().setLayout(null);
-         
-        System.out.println(deustomusic.getUsuario());
         
-        JLabel foto = new JLabel();
-        getContentPane().add(foto);
-        ImageIcon imagen= (new ImageIcon("heart.png"));
-      //  foto.setIcon(imagen);
-      //  foto.setBounds(427, 45, 118, 107);
-      //  foto.setVisible(false);
+        JPanel panel = new JPanel();
+        panel.setBackground(new Color(255, 255, 255));
+        panel.setBounds(317, 30, 346, 370);
+        getContentPane().add(panel);
+        panel.setLayout(null);
+        panel.setVisible(false);
         
         modeloCanciones = new DefaultListModel<Cancion>();
 	
@@ -106,47 +114,9 @@ public class VentanaDeustomusic extends JFrame{
 		JLabel titulomultimedias = new JLabel("Todas las canciones🎵 (enter para indicar favorita)");
         scrollCanciones.setColumnHeaderView(titulomultimedias);
 
-        
-		
 		
 		
        listaCanciones.addKeyListener(new KeyAdapter() {	
-		
-    	/*   Thread hiloFav = new Thread(new Runnable() {
-   			boolean pausa = false;
-   			int inc = 5;
-   			int tamano = 30;			
-   				@Override
-   				public void run() {
-   					if(foto.isVisible()) {
-   						pausa = false;
-   						int inc = 5;
-   						int tamano = 30;
-   					}
-   					while(!pausa) {
-   						tamano += inc;
-   						if(tamano > 150) {
-   							tamano = 150;
-   							inc = -5;
-   						} else if (tamano<30) {
-   							tamano = 30;
-   							inc = 5;
-   							pausa = true;
-   							foto.setVisible(false);
-   						}
-   						
-   						foto.setBounds(450, 45, tamano, tamano);
-   						try {
-   							Thread.sleep(30);
-   						} catch (InterruptedException e) {
-   							e.printStackTrace();
-   						}
-   					
-   				}
-   				}
-   			});
-   		hiloFav.start();   */
-    	   
 		@Override
 		public void keyReleased(KeyEvent e) {
 			boolean repetido = true;
@@ -162,6 +132,11 @@ public class VentanaDeustomusic extends JFrame{
 					}else {
 						repetido = false;
 					}
+				}
+				if(deustomusic.getListaFav().isEmpty()) {
+					deustomusic.getListaFav().add(new Favorito(deustomusic.getUsuario(), listaCanciones.getSelectedValue().getNombre(), null));
+					gestor.insertarDatosFav(deustomusic.getListaFav().toArray(new Favorito[deustomusic.getListaFav().size()]));
+					modeloFav.addElement(listaCanciones.getSelectedValue());
 				}
 				if (repetido == false) {
 				deustomusic.getListaFav().clear();
@@ -276,12 +251,12 @@ public class VentanaDeustomusic extends JFrame{
 		});
 		
 		JButton buscar = new JButton("Buscar");
-		buscar.setBounds(10, 77, 143, 49);
+		buscar.setBounds(10, 70, 143, 49);
 		getContentPane().add(buscar);
 
 		
 		JButton cerrarsesion = new JButton("Cerrar Sesión");
-		cerrarsesion.setBounds(10, 236, 143, 61);
+		cerrarsesion.setBounds(10, 294, 143, 61);
 		getContentPane().add(cerrarsesion);
 		
 		JButton informacion = new JButton("Información");
@@ -303,7 +278,7 @@ public class VentanaDeustomusic extends JFrame{
 		listaArtistas = new JList(modeloArtistas);
 		listaArtistas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollArtistas = new JScrollPane(listaArtistas);
-		scrollArtistas.setBounds(10, 128, 180, 97);
+		scrollArtistas.setBounds(10, 119, 180, 97);
 		getContentPane().add(scrollArtistas);
 		JLabel tituloArtistas = new JLabel("Busca el artista (doble click)");
         scrollArtistas.setColumnHeaderView(tituloArtistas);
@@ -321,16 +296,16 @@ public class VentanaDeustomusic extends JFrame{
 					listaBuscado.setVisible(false);
 					scrollCanciones.setVisible(true);
 				}
+				
 			}
 		});
-		Recursividad.recursividad();
 		modeloBuscado = new DefaultListModel<Cancion>();
 		listaBuscado = new JList(modeloBuscado);
 		listaBuscado.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollBuscado = new JScrollPane(listaBuscado);
 		scrollBuscado.setBounds(317, 30, 346, 113);
 		getContentPane().add(scrollBuscado);
-		JLabel titulobuscado = new JLabel("Canciones de tu artista");
+		JLabel titulobuscado = new JLabel("Canciones de tu artista (enter para indicar favorita)");
         scrollBuscado.setColumnHeaderView(titulobuscado);		
 			
 		listaArtistas.addMouseListener(new MouseAdapter() {
@@ -348,11 +323,48 @@ public class VentanaDeustomusic extends JFrame{
 								}
 							}
 						}
+				      
+				      if(panel.isVisible()) {
+							panel.setVisible(false);
+						}
 				      scrollCanciones.setVisible(false);
 				      listaBuscado.setVisible(true);
 				    }
 				
 			}
+		});
+		
+		listaBuscado.addKeyListener(new KeyAdapter() {	
+			@Override
+			public void keyReleased(KeyEvent e) {
+				boolean repetido = true;
+
+				if(e.getKeyCode()==10) {
+					Favorito nuevo = new Favorito(deustomusic.getUsuario(), listaBuscado.getSelectedValue().getNombre(), null);
+					
+					for (Favorito fav : deustomusic.getListaFav()) {
+						if(fav.getNombreCancion().equals(nuevo.getNombreCancion()) && fav.getUsuario().getId() == nuevo.getUsuario().getId()) {
+							repetido = true;
+							System.err.println("Esta cancion ya esta en favoritas");
+							break;
+						}else {
+							repetido = false;
+						}
+					}
+					if(deustomusic.getListaFav().isEmpty()) {
+						deustomusic.getListaFav().add(new Favorito(deustomusic.getUsuario(), listaBuscado.getSelectedValue().getNombre(), null));
+						gestor.insertarDatosFav(deustomusic.getListaFav().toArray(new Favorito[deustomusic.getListaFav().size()]));
+						modeloFav.addElement(listaBuscado.getSelectedValue());
+					}
+					if (repetido == false) {
+					deustomusic.getListaFav().clear();
+					deustomusic.getListaFav().add(new Favorito(deustomusic.getUsuario(), listaBuscado.getSelectedValue().getNombre(), null));
+					gestor.insertarDatosFav(deustomusic.getListaFav().toArray(new Favorito[deustomusic.getListaFav().size()]));
+					modeloFav.addElement(listaBuscado.getSelectedValue());
+					}
+				}
+			}
+
 		});
 		
 		modeloFav = new DefaultListModel<Cancion>();
@@ -373,27 +385,107 @@ public class VentanaDeustomusic extends JFrame{
         JLabel titulofav = new JLabel("Tus canciones favoritas❤");
         scrollFav.setColumnHeaderView(titulofav);
         
-        JButton btnNewButton = new JButton("Combinacionesºº");
-        btnNewButton.setBounds(37, 322, 85, 21);
-        getContentPane().add(btnNewButton);
         
-        btnNewButton.addActionListener(new ActionListener() {
+        modeloRec = new DefaultListModel<List<Cancion>>();
+        listaRec = new JList(modeloRec);
+        JScrollPane scrollRec = new JScrollPane(listaRec);
+        scrollRec.setBounds(0, 132, 346, 238);
+        panel.add(scrollRec);
+        
+        minutos = new JTextField();
+        minutos.setBounds(116, 66, 73, 20);
+        panel.add(minutos);
+        minutos.setColumns(10);
+        
+        segundos = new JTextField();
+        segundos.setBounds(226, 66, 64, 20);
+        panel.add(segundos);
+        segundos.setColumns(10);
+        
+        horas = new JTextField();
+        horas.setBounds(10, 66, 73, 20);
+        panel.add(horas);
+        horas.setColumns(10);
+        
+        JLabel titRecursivo = new JLabel("<html>Indica el tiempo que tienes en tu viaje y ve las posibles <br/> combinaciones  de tus canciones favoritas que puedes escuchar</html>");
+        titRecursivo.setHorizontalAlignment(SwingConstants.CENTER);
+        titRecursivo.setBackground(new Color(192, 192, 192));
+        titRecursivo.setBounds(0, 0, 346, 55);
+        panel.add(titRecursivo);
+        
+        JLabel lblH = new JLabel("h");
+        lblH.setBounds(93, 70, 31, 14);
+        panel.add(lblH);
+        
+        JLabel lblM = new JLabel("m");
+        lblM.setBounds(199, 70, 46, 14);
+        panel.add(lblM);
+        
+        JLabel lblS = new JLabel("s");
+        lblS.setBounds(300, 70, 46, 14);
+        panel.add(lblS);
+        
+        JButton combinar = new JButton("Ver Combinaciones");
+        combinar.setBounds(92, 98, 168, 23);
+        panel.add(combinar);
+        
+        
+        JButton recursivo = new JButton("Planea tu viaje!");
+        recursivo.setBounds(10, 227, 143, 56);
+        getContentPane().add(recursivo);
+        
+        recursivo.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(canciones);
-				Recursividad.combinaciones(canciones,1000, 500);
+				if(panel.isVisible()) {
+					scrollCanciones.setVisible(true);
+					panel.setVisible(false);
+				} else {
+					scrollCanciones.setVisible(false);
+					panel.setVisible(true);
+				}
+				
 			}
 		});
 
-       
-		
+		combinar.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ArrayList<Cancion> listaRec = new ArrayList<>();
+				int tiempo = 0;
+				if (horas.getText().equals("")) {
+					horas.setText("0");
+				}
+				if (minutos.getText().equals("")) {
+					minutos.setText("0");
+				}
+				if (segundos.getText().equals("")) {
+					segundos.setText("0");
+				}
+				
+				tiempo = Integer.parseInt(horas.getText())*3600 + Integer.parseInt(minutos.getText())*60 + Integer.parseInt(segundos.getText());
+				
+				for (Multimedia c : deustomusic.getFavoritos().get(deustomusic.getUsuario())) {
+					if (c instanceof Cancion) {
+						listaRec.add((Cancion)c);
+					}
+				}
+				if(tiempo == 0) {
+					System.out.println("Inserta valores adecuados en el tiempo");
+				} else {
+					recursividad(listaRec, tiempo);
+				}
+				
+			}
+		});
 
 		cerrarsesion.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-			//	cierra();
+				cierra();
 			}
 		});
 
@@ -408,9 +500,7 @@ public class VentanaDeustomusic extends JFrame{
 		
 		
 	}
-	
-	
-	public class Recursividad {
+
 		 private static void combinacionesR(List<List<Cancion>> result, List<Cancion> elementos, int duracion, int sobrantemax,  List<Cancion> temp) {
 			 Comparator<Cancion> compDuracion = (s1, s2) -> {
 					return Integer.compare(s1.getDuracion(), s2.getDuracion());
@@ -453,26 +543,19 @@ public class VentanaDeustomusic extends JFrame{
     }
 	
 	
-	public static void recursividad() {
-    	List<Cancion> elementos = new ArrayList<>();
-    	elementos.add(new Cancion("nombre", "artista", 180, 5, 30, Genero.ACOUSTIC_POP));
-    	elementos.add(new Cancion("nombre111", "artista", 1400, 5, 30, Genero.ACOUSTIC_POP));
-    	elementos.add(new Cancion("nombre333", "artista", 100, 5, 30, Genero.ACOUSTIC_POP));
-    	int duracion = 280;
-    	int sobrantemax = 50;
-    	    	
+	public void recursividad(List<Cancion> elementos, int duracion) {
+		int sobrantemax;
+    	sobrantemax = (int)(duracion * 0.3);
+		
     	List<List<Cancion>> result = combinaciones(elementos, duracion , sobrantemax);
-    	System.out.println(String.format("Combinaciones de menos de "+  duracion +" segundos"));
-    	result.forEach(r -> System.out.println(r));
+    	System.out.println(String.format("Combinaciones de aproximadamente "+  duracion +" segundos"));
+    	result.forEach(r -> modeloRec.addElement(r));
+  
 	}
-
-	
-	
-	
 	
 	public void cierra() {
 		dispose();
 	}
 }
-}
+
 
